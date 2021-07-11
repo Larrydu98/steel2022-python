@@ -1,0 +1,33 @@
+[MESSAGES CONTROL]
+
+# Enable the message, report, category or checker with the given id(s). You can
+# either give multiple identifier separated by comma (,) or put this option
+# multiple time.
+#enable=
+
+# Disable the message, report, category or checker with the given id(s). You
+# can either give multiple identifier separated by comma (,) or put this option
+# multiple time (only on the command line, not in the configuration file where
+# it should appear only once).
+#disable=
+disable=
+  logging-not-lazy, 
+  line-too-long, 
+  trailing-whitespace, 
+  bare-except, 
+  broad-except,
+  bad-indentation,
+  bad-continuation,
+  invalid-name,
+  no-member,
+  unused-argument,
+  no-self-use 
+  
+[FORMAT]
+# String used as indentation unit. This is usually " " (4 spaces) or "\t" (1  
+# tab).  
+indent-string='    '
+#indent-after-paren=1
+
+[DESIGN]
+min-public-methods=0
