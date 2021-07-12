@@ -242,7 +242,7 @@ def new_getData(selection, ismissing, tgtwidthSelect, tgtlengthSelect, tgtthickn
     configArr = readConfig()
     conn = psycopg2.connect(database=configArr[0], user=configArr[1], password=configArr[2], host=configArr[3], port=configArr[4])
 
-    SQL = new_SQLselect(selection, ismissing, tgtwidthSelect, tgtlengthSelect, tgtthicknessSelect, tocSelect, UpidSelect, Platetypes, AscOption, Limition)
+    SQL = sqlselect_bytime(selection, ismissing, tgtwidthSelect, tgtlengthSelect, tgtthicknessSelect, tocSelect, UpidSelect, Platetypes, AscOption, Limition)
     # print(SQL)
     # conn = psycopg2.connect(database='BSData20190713', user='postgres', password='616616', host='219.216.80.18',port='5432')
     # conn = psycopg2.connect(database='bg', user='postgres', password='woshimima', host='202.118.21.236',port='5432')
@@ -329,13 +329,112 @@ def new_SQLselect(selection,ismissing,tgtwidthSelect,tgtlengthSelect,tgtthicknes
             return SQL
     return "select "+select+" from app.deba_dump_data "+ASC+Limit
 
+
+def sqlselect_bytime(selection, ismissing, tgtwidthSelect, tgtlengthSelect, tgtthicknessSelect, tocSelect, UpidSelect, Platetypes, AscOption, Limition):
+    index=0
+    miss=['0','0','0','0','0','0']
+    missselect=''
+    for i in ismissing:
+        if(ismissing[i]):
+            # selection.append(Process[index])
+            missselect+= ' and '+i+'= '+miss[index]
+        index+=1
+#         print(missselect)
+
+    if(len(selection)==0): #select
+        select='*'
+        # print('fjdksjfskdjl')
+    else:
+        select = ','.join(selection)
+#             print(select)
+    if(len(tgtwidthSelect)==0):   #tgtwidth
+        tgtwidth=''
+    else:
+        tgtwidth=' and tgtwidth between '+tgtwidthSelect[0]+' and '+tgtwidthSelect[1]+' '
+    if(len(tgtlengthSelect)==0):   #tgtlength
+        tgtlength=''
+    else:
+        tgtlength=' and tgtlength between '+tgtlengthSelect[0]+' and '+tgtlengthSelect[1]+' '
+    if(len(tgtthicknessSelect)==0):  #tgtthickness
+        tgtthickness=''
+    else:
+        tgtthickness=' and tgtthickness between '+tgtthicknessSelect[0]+' and '+tgtthicknessSelect[1]+' '
+    if(len(tocSelect)==0):   #toc
+        toc=''
+    else:
+        toc=' and toc between '+repr(tocSelect[0])+' and '+repr(tocSelect[1])+' '
+
+    if(len(UpidSelect)==0): #upid
+        upid=''
+    else:
+        upid=' and ('
+        for i in UpidSelect:
+            upid+="upid="+repr(i)+' or '
+        upid=upid[:-3]
+        upid+=')'
+    if(len(Platetypes)==0):  #platetype
+        platetype=''
+    else:
+        platetype='and ('
+        for i in Platetypes:
+            platetype+='platetype='+repr(i)+' or '
+        platetype=platetype[:-3]
+        platetype+=')'
+    if(AscOption==''):  #ASC
+        ASC=''
+    else:
+        ASC=' ORDER BY '+AscOption+' DESC'
+    if(Limition==''):  #Limit
+        Limit=''
+    else:
+        Limit=' LIMIT '+Limition
+    Query=[tgtwidth,tgtlength,tgtthickness,toc,upid,platetype,missselect]
+
+    for i in range(len(Query)):
+        if(len(Query[i])!=0):
+            Query[i]=Query[i][4:]
+            # print(Query[i])
+            SQL="select "+select+" from app.deba_dump_data " +"where"
+            for j in Query:
+                SQL+=j
+            SQL+=ASC+Limit
+            # print(SQL)
+            return SQL
+    return "select "+select+" from app.deba_dump_data "+ASC+Limit
+
+
 def new_getData(selection, ismissing, tgtwidthSelect, tgtlengthSelect, tgtthicknessSelect, tocSelect, UpidSelect, Platetypes, AscOption, Limition):
     #  for docker outside config
 
     configArr = readConfig()
     conn = psycopg2.connect(database=configArr[0], user=configArr[1], password=configArr[2], host=configArr[3], port=configArr[4])
 
-    SQL = new_SQLselect(selection, ismissing, tgtwidthSelect, tgtlengthSelect, tgtthicknessSelect, tocSelect, UpidSelect, Platetypes, AscOption, Limition)
+    SQL = sqlselect_bytime(selection, ismissing, tgtwidthSelect, tgtlengthSelect, tgtthicknessSelect, tocSelect, UpidSelect, Platetypes, AscOption, Limition)
+    # print("new_getData")
+    # print(SQL)
+
+    # conn = psycopg2.connect(database='BSData20190713', user='postgres', password='616616', host='219.216.80.18',port='5432')
+    # conn = psycopg2.connect(database='bg', user='postgres', password='woshimima', host='202.118.21.236',port='5432')
+
+    cursor = conn.cursor()
+    cursor.execute(SQL)
+    rows = cursor.fetchall()
+
+    col_names = []
+    for elt in cursor.description:
+        col_names.append(elt[0])
+
+    conn.close()
+    return rows,col_names
+
+
+def getData_bytime(selection, ismissing, tgtwidthSelect, tgtlengthSelect, tgtthicknessSelect, tocSelect, UpidSelect, Platetypes, AscOption, Limition):
+    #  for docker outside config
+
+    configArr = readConfig()
+    conn = psycopg2.connect(database=configArr[0], user=configArr[1], password=configArr[2], host=configArr[3], port=configArr[4])
+
+    SQL = sqlselect_bytime(selection, ismissing, tgtwidthSelect, tgtlengthSelect, tgtthicknessSelect, tocSelect, UpidSelect, Platetypes, AscOption, Limition)
     # print("new_getData")
     # print(SQL)
 
