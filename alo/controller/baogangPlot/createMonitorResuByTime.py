@@ -261,12 +261,12 @@ def unidimensional_monitoring(upid_data_df, good_data_df, col_names, data_names_
                 'extremum_u': extremum_upper_limit_norm[proc_i],
                 's_extremum_l': s_extremum_lower_limit_norm[proc_i],
                 's_extremum_u': s_extremum_upper_limit_norm[proc_i]
-            })
+                })
             proc_i += 1
     return result
 
 
-class createDiagResu:
+class createMonitorResu:
     '''
     createDiagResu
     '''
@@ -335,7 +335,6 @@ class createDiagResu:
                 goodBoardData.append(item_data)
 
         goodBoardDf = pd.DataFrame(data=goodBoardData, columns=data_names).fillna(0)
-        # print(len((goodBoardDf.max() - goodBoardDf.min())[(goodBoardDf.max() - goodBoardDf.min()) == 0]))
         goodBoardDf['upid'] = goodBoardId
         goodBoardData = np.array(goodBoardData)
         # badBoardData = np.array(badBoardData)
@@ -344,14 +343,18 @@ class createDiagResu:
         X_zero_std = np.where((np.std(X_train, axis=0)) <= 1e-10)
         X_train = np.delete(X_train, X_zero_std, axis=1)
 
-        for i in sorted(X_zero_std[0], reverse=True):
-            del data_names[i]
+        X_Heat_train = X_train[:, 0:68]
+        X_Roll_train = X_train[:, 68:97]
+        if status_cooling == 0:
+            X_Cool_train = X_train[:, 97:117]
 
         if len(X_train) < 5:
             return [], 202
 
+        for i in sorted(X_zero_std[0], reverse=True):
+            del data_names[i]
 
-        diag_result = []
+        monitor_result = []
         for i in range(len(data)):
             upid = data[i][0]
             platetype = data[i][1]
@@ -370,42 +373,83 @@ class createDiagResu:
             X_test =X_test.reshape((1, len(X_test)))
             X_test = np.delete(X_test, X_zero_std, axis=1)
 
-            T2UCL1, T2UCL2, QUCL, T2, Q, CONTJ, contq = PCATEST().general_call({
+            X_Heat_test = X_test[:, 0:68]
+            X_Roll_test = X_test[:, 68:97]
+
+            T2UCL1, QUCL, T2, Q = PCATEST().stage_general_call({
                 'Xtrain': X_train,
                 'Xtest': X_test,
             })
 
-            CONTJ_Pro = []
-            maxCON = max(CONTJ)
-            minCON = min(CONTJ)
-            for item in CONTJ:
-                mid = (item - minCON) / (maxCON - minCON)
-                CONTJ_Pro.append(mid)
-
-            contq_Pro = []
-            maxContq = max(contq.tolist())
-            minContq = min(contq.tolist())
-            for item in contq.tolist():
-                mid = (item - minContq) / (maxContq - minContq)
-                contq_Pro.append(mid)
-
-            upid_data_df = pd.DataFrame(data=X_test, columns=data_names)
-            result = unidimensional_monitoring(upid_data_df,
-                                               goodBoardDf,
-                                               data_names,
-                                               data_names_meas,
-                                               0.25, 0.05, 0.01)
-
-            diag_result.append({
-                "upid": upid,
-                "toc": toc.strftime("%Y-%m-%d %H:%M:%S"),
-                "fqc_label": fqc_label,
-
-                "one_dimens": result,
-
-                "CONTJ": CONTJ_Pro,
-                "CONTQ": contq_Pro
+            Heat_T2UCL, Heat_QUCL, Heat_T2, Heat_Q = PCATEST().stage_general_call({
+                'Xtrain': X_Heat_train,
+                'Xtest': X_Heat_test
             })
+            Roll_T2UCL, Roll_QUCL, Roll_T2, Roll_Q = PCATEST().stage_general_call({
+                'Xtrain': X_Roll_train,
+                'Xtest': X_Roll_test
+            })
+            if status_cooling == 0:
+                X_Cool_test = X_test[:, 97:117]
+                Cool_T2UCL, Cool_QUCL, Cool_T2, Cool_Q = PCATEST().stage_general_call({
+                    'Xtrain': X_Cool_train,
+                    'Xtest': X_Cool_test
+                })
 
+            # upid_data_df = pd.DataFrame(data=X_test, columns=data_names)
+            # result = unidimensional_monitoring(upid_data_df,
+            #                                    goodBoardDf,
+            #                                    data_names,
+            #                                    data_names_meas,
+            #                                    0.25, 0.05, 0.01)
 
-        return diag_result, 200
+            if status_cooling == 0:
+                monitor_result.append({
+                    "upid": upid,
+                    "toc": toc.strftime("%Y-%m-%d %H:%M:%S"),
+                    "fqc_label": fqc_label,
+
+                    # "one_dimen": result,
+
+                    "T2UCL1": T2UCL1,
+                    "QUCL": QUCL,
+                    "T2": T2[0][0],
+                    "Q": Q[0][0],
+
+                    "Heat_T2UCL": Heat_T2UCL,
+                    "Heat_QUCL": Heat_QUCL,
+                    "Heat_T2": Heat_T2[0][0],
+                    "Heat_Q": Heat_Q[0][0],
+                    "Roll_T2UCL": Roll_T2UCL,
+                    "Roll_QUCL": Roll_QUCL,
+                    "Roll_T2": Roll_T2[0][0],
+                    "Roll_Q": Roll_Q[0][0],
+                    "Cool_T2UCL": Cool_T2UCL,
+                    "Cool_QUCL": Cool_QUCL,
+                    "Cool_T2": Cool_T2[0][0],
+                    "Cool_Q": Cool_Q[0][0]
+                })
+            else:
+                monitor_result.append({
+                    "upid": upid,
+                    "toc": toc.strftime("%Y-%m-%d %H:%M:%S"),
+                    "fqc_label": fqc_label,
+
+                    # "one_dimen": result,
+
+                    "T2UCL1": T2UCL1,
+                    "QUCL": QUCL,
+                    "T2": T2[0][0],
+                    "Q": Q[0][0],
+
+                    "Heat_T2UCL": Heat_T2UCL,
+                    "Heat_QUCL": Heat_QUCL,
+                    "Heat_T2": Heat_T2[0][0],
+                    "Heat_Q": Heat_Q[0][0],
+                    "Roll_T2UCL": Roll_T2UCL,
+                    "Roll_QUCL": Roll_QUCL,
+                    "Roll_T2": Roll_T2[0][0],
+                    "Roll_Q": Roll_Q[0][0]
+                })
+
+        return monitor_result, 200
