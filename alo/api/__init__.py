@@ -23,7 +23,8 @@ from . import diagnosisDataApi
 # from . import detailProcessApi
 from . import VisualizationTsneApi
 from . import VisualizationPCAApi
-from . import VisualizationMDSApi
+from . import VisualizationISOMAPApi
+from . import VisualizationUMAPApi
 from . import getFlag
 from . import Visualization
 from . import newVisualization

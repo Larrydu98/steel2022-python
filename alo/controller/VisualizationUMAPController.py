@@ -1,18 +1,17 @@
 '''
-VisualizationMDSController
+VisualizationUMAPController
 '''
 
-import json
 import numpy as np
 import pandas as pd
-from sklearn.manifold import MDS,Isomap
+import datetime as dt
+import umap
 from ..api.singelSteel import data_names, without_cooling_data_names, specifications
 
 
-
-class getVisualizationMDS:
+class getVisualizationUMAP:
     '''
-    getVisualizationMDS
+    getVisualizationUMAP
     '''
 
     def __init__(self):
@@ -20,25 +19,7 @@ class getVisualizationMDS:
         # print('生成实例')
 
     def run(self, data):
-        # read data from database which has character:
-        # toc，upid，productcategory，tgtplatelength2，tgtplatethickness2，tgtwidth，ave_temp_dis，
-        # crowntotal，nmrPre_params，wedgetotal，finishtemptotal，avg_p5
-
-        # N=1000 #样本数
-
-        # M=300 #一维变量维度
-
-        # X = np.random.random((N,M))
-        # X = np.random.random((2,3))
-        # print(X)
-        # embedding = MDS(n_components=2)
-
-        # X_transformed = embedding.fit_transform(X)
-        # toc，upid，productcategory，tgtplatelength2，tgtplatethickness2，tgtwidth，ave_temp_dis，crowntotal，nmrPre_params，wedgetotal，finishtemptotal，avg_p5
-
         X = []
-        X_cooling = []
-        X_nocooling = []
         for item in data:
             process_data = []
             if item[9] == 0:
@@ -51,7 +32,7 @@ class getVisualizationMDS:
                 X.append(process_data)
 
         X = pd.DataFrame(X).fillna(0).values.tolist()
-        X_embedded = MDS(n_components=2).fit_transform(X)
+        X_embedded = umap.UMAP().fit_transform(X)
 
         index = 0
         upload_json = {}
@@ -85,6 +66,3 @@ class getVisualizationMDS:
             upload_json[str(index)] = single
             index += 1
         return upload_json
-
-
-

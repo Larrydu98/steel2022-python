@@ -1,17 +1,18 @@
 '''
-VisualizationPCAController
+VisualizationISOMAPController
 '''
 
+import json
 import numpy as np
 import pandas as pd
-import datetime as dt
-from sklearn.decomposition import PCA
+from sklearn.manifold import Isomap
 from ..api.singelSteel import data_names, without_cooling_data_names, specifications
 
 
-class getVisualizationPCA:
+
+class getVisualizationISOMAP:
     '''
-    getVisualizationPCA
+    getVisualizationISOMAP
     '''
 
     def __init__(self):
@@ -20,6 +21,8 @@ class getVisualizationPCA:
 
     def run(self, data):
         X = []
+        X_cooling = []
+        X_nocooling = []
         for item in data:
             process_data = []
             if item[9] == 0:
@@ -32,7 +35,7 @@ class getVisualizationPCA:
                 X.append(process_data)
 
         X = pd.DataFrame(X).fillna(0).values.tolist()
-        X_embedded = PCA(n_components=2).fit_transform(X)
+        X_embedded = Isomap(n_components=2).fit_transform(X)
 
         index = 0
         upload_json = {}
@@ -66,3 +69,6 @@ class getVisualizationPCA:
             upload_json[str(index)] = single
             index += 1
         return upload_json
+
+
+
