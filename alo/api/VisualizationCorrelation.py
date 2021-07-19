@@ -7,6 +7,7 @@ from . import api
 import pandas as pd
 import numpy as np
 from ..utils import getData
+from .singelSteel import modeldata_for_corr
 from ..utils import getFlagArr
 import json
 from sklearn.manifold import TSNE
@@ -14,6 +15,10 @@ from sklearn.decomposition import PCA
 from scipy.interpolate import interp1d
 from scipy.stats import pearsonr
 from sklearn import metrics
+from .singelSteel import no_category_data_names, no_category_data_names_without_cooling
+
+import warnings
+warnings.filterwarnings("ignore")
 
 parser = reqparse.RequestParser(trim=True, bundle_errors=True)
 
@@ -25,7 +30,7 @@ class VisualizationCorrelation(Resource):
     '''
     SixDpictureUpDownQuantile
     '''
-    def get(self,startTime,endTime):
+    def post(self, startTime, endTime, limit):
         """
         get
         ---
@@ -55,57 +60,55 @@ class VisualizationCorrelation(Resource):
         #     ssB = (B_mB**2).sum(1)
 
         #     return np.dot(A_mA, B_mB.T) / 0.1+np.sqrt(np.dot(ssA[:, None],ssB[None]))
-        ismissing={'all_processes_statistics_ismissing':True}
-        selection=['all_processes_statistics','all_processes_statistics_ismissing','cool_ismissing','fu_temperature_ismissing','m_ismissing','fqc_ismissing']
-        data = getData(['all_processes_statistics','all_processes_statistics_ismissing','cool_ismissing','fu_temperature_ismissing','m_ismissing','fqc_ismissing'], ismissing, [], [], [], [startTime,endTime], [], [], '', '')
-        columnslabel=data[0][0]['columns']
+
+        data, status_cooling = modeldata_for_corr(parser,
+                                         ['dd.stats', 'dd.status_stats', 'dd.status_furnace', 'dd.status_rolling', 'dd.status_cooling', 'dd.status_fqc'],
+                                         startTime,
+                                         endTime,
+                                         limit)
+        _data_name = []
+        if status_cooling == 0:
+            _data_name = no_category_data_names
+        else:
+            _data_name = no_category_data_names_without_cooling
+
+
+        # ismissing={'all_processes_statistics_ismissing':True}
+        # selection=['','','','','m_ismissing','fqc_ismissing']
+        # data = getData(['all_processes_statistics','all_processes_statistics_ismissing','cool_ismissing','fu_temperature_ismissing','m_ismissing','fqc_ismissing'], ismissing, [], [], [], [startTime,endTime], [], [], '', '')
+        selection = ['', '', '', '', 'status_rolling', 'status_fqc']
         len1=len(data)
         processdata=[]
         fault=[]
-        jsondata={'data':[]}
-        sortData = {}
         for i in range(len1):
-            processdata.append(data[i][0]['data'])
-            temp=[]
-            for j in range(1,len(selection)):
-                temp.append(data[i][j])
-            fault.append(temp)
-        processdata=np.array(processdata)
+            proc_value = []
+            if status_cooling == 0 and data[i][4] == 0:
+                for key in _data_name:
+                    d = data[i][0][key]
+                    proc_value.append(d)
+                processdata.append(proc_value)
+
+                temp = []
+                for j in range(1,len(selection)):
+                    temp.append(data[i][j])
+                fault.append(temp)
+        processdata = pd.DataFrame(processdata).dropna(axis=0, how='any')
+        processdata = np.array(processdata)
         processdata=processdata.swapaxes(0,1)
         fault=np.array(fault)
-        fault=fault.swapaxes(0,1)
-        nmi_matrix = np.zeros([len(processdata),len(fault)]) #初始化互信息矩阵
-        for i in range(len(processdata)):
-            for j in range(len(fault)):
-                nmi_matrix[i][j] = metrics.normalized_mutual_info_score(processdata[i], fault[j])
-        result=np.abs(nmi_matrix.swapaxes(0,1)).tolist()
-        faultSum = np.zeros(len(processdata))
-        for i in range(len(result)):
-            jsondata['data'].append({'fault'+repr(i):result[i]})
-            faultSum = np.array(result[i]) + faultSum
-            sortData['fault'+repr(i)] = result[i]
-            # print(len(result[i]))
-        jsondata['label']=columnslabel
-        # print(len(columnslabel))
+        fault=fault.swapaxes(0, 1)
+        # nmi_matrix = np.zeros([len(processdata),len(processdata)]) #初始化互信息矩阵
+        # for i in range(len(processdata)):
+        #     for j in range(len(processdata)):
+        #         nmi_matrix[i][j] = metrics.normalized_mutual_info_score(processdata[i], processdata[j])
 
-        dataIndex = np.array(range(len(processdata)))
-
-        sortDataFrame = {'faultSum': faultSum, 'dataIndex': dataIndex}
-        sortDataFrame = pd.DataFrame(sortDataFrame)
-        sortDataFrame = sortDataFrame.sort_values(by="faultSum",ascending=True)
-        indexArr = sortDataFrame['dataIndex'].values
-
-        sortData['label'] = columnslabel
-        sortData = pd.DataFrame(sortData)
-
-        sortData = sortData.loc[indexArr]
-        sortData = sortData.to_dict('list')
         corrdata=np.corrcoef(processdata)
-        X_embedded = TSNE(n_components=2).fit_transform(processdata)
-        # print(X_embedded)
-        print(X_embedded.shape)
-        print(corrdata.shape)
-        sortData['corr']=corrdata.tolist()
-        sortData['position']=X_embedded.tolist()
-        return sortData, 200, {'Access-Control-Allow-Origin': '*'}
-api.add_resource(VisualizationCorrelation, '/v1.0/model/VisualizationCorrelation/<startTime>/<endTime>/')
+
+        res = {
+            'label': _data_name,
+            'corr': corrdata.tolist(),
+            # 'nmi': nmi_matrix.tolist()
+        }
+        return res, 200, {'Access-Control-Allow-Origin': '*'}
+
+api.add_resource(VisualizationCorrelation, '/v1.0/model/VisualizationCorrelation/<startTime>/<endTime>/<limit>')
