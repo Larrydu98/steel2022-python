@@ -125,19 +125,17 @@ class PCATEST:
                        1. / h0)
         n = Xtest.shape[0]
         m = Xtest.shape[1]
-        XtrainTest = (Xtest - np.tile(X_mean, (n, 1))) / np.tile(X_std, (n, 1))
-        X = np.concatenate((Xtrain, XtrainTest), axis=0)
+
+        Xtest = (Xtest - np.tile(X_mean, (n, 1))) / np.tile(X_std, (n, 1))
         P = np.matrix(P)
         [r, y] = (P * P.T).shape
         I = np.eye(r, y)
         T2 = np.zeros((n, 1))
         Q = np.zeros((n, 1))
         for i in range(n):
-            T2[i] = np.matrix(X[i, :]) * P * np.matrix(
-                (lamda[np.ix_(np.arange(m - num_pc, m), np.arange(m - num_pc, m))])).I * P.T * np.matrix(X[i, :]).T
-
-            Q[i] = np.matrix(X[i, :]) * (I - P * P.T) * np.matrix(X[i, :]).T
-
+            T2[i] = np.matrix(Xtest[i, :]) * P * np.matrix(
+                (lamda[np.ix_(np.arange(m - num_pc, m), np.arange(m - num_pc, m))])).I * P.T * np.matrix(Xtest[i, :]).T
+            Q[i] = np.matrix(Xtest[i, :]) * (I - P * P.T) * np.matrix(Xtest[i, :]).T
         return T2UCL1, QUCL, T2, Q
 
 
@@ -355,6 +353,40 @@ class createMonitorResu:
             del data_names[i]
 
         monitor_result = []
+        X_test = []
+        for i in range(len(data)):
+            one_process = []
+            for data_name in data_names:
+                one_process.append(data[i][5][data_name])
+            one_process = list(map(lambda x: 0.0 if x is None else x, one_process))
+            X_test.append(one_process)
+
+        X_test = np.array(X_test)
+        X_test = np.delete(X_test, X_zero_std, axis=1)
+        T2UCL1, QUCL, T2, Q = PCATEST().stage_general_call({
+            'Xtrain': X_train,
+            'Xtest': X_test,
+        })
+
+        X_Heat_test = X_test[:, 0:68]
+        X_Roll_test = X_test[:, 68:97]
+        Heat_T2UCL, Heat_QUCL, Heat_T2, Heat_Q = PCATEST().stage_general_call({
+            'Xtrain': X_Heat_train,
+            'Xtest': X_Heat_test
+        })
+        Roll_T2UCL, Roll_QUCL, Roll_T2, Roll_Q = PCATEST().stage_general_call({
+            'Xtrain': X_Roll_train,
+            'Xtest': X_Roll_test
+        })
+
+        if status_cooling == 0:
+            X_Cool_test = X_test[:, 97:117]
+            Cool_T2UCL, Cool_QUCL, Cool_T2, Cool_Q = PCATEST().stage_general_call({
+                'Xtrain': X_Cool_train,
+                'Xtest': X_Cool_test
+            })
+
+
         for i in range(len(data)):
             upid = data[i][0]
             platetype = data[i][1]
@@ -363,38 +395,6 @@ class createMonitorResu:
             tgtthickness = data[i][4]
             fqc_label = 1 if np.array(data[i][6]['method1']['data']).sum() == 5 else 0
             toc = data[i][7]
-
-            one_process = []
-            for data_name in data_names:
-                one_process.append(data[i][5][data_name])
-            one_process = list(map(lambda x: 0.0 if x is None else x, one_process))
-
-            X_test = np.array(one_process)
-            X_test =X_test.reshape((1, len(X_test)))
-            X_test = np.delete(X_test, X_zero_std, axis=1)
-
-            X_Heat_test = X_test[:, 0:68]
-            X_Roll_test = X_test[:, 68:97]
-
-            T2UCL1, QUCL, T2, Q = PCATEST().stage_general_call({
-                'Xtrain': X_train,
-                'Xtest': X_test,
-            })
-
-            Heat_T2UCL, Heat_QUCL, Heat_T2, Heat_Q = PCATEST().stage_general_call({
-                'Xtrain': X_Heat_train,
-                'Xtest': X_Heat_test
-            })
-            Roll_T2UCL, Roll_QUCL, Roll_T2, Roll_Q = PCATEST().stage_general_call({
-                'Xtrain': X_Roll_train,
-                'Xtest': X_Roll_test
-            })
-            if status_cooling == 0:
-                X_Cool_test = X_test[:, 97:117]
-                Cool_T2UCL, Cool_QUCL, Cool_T2, Cool_Q = PCATEST().stage_general_call({
-                    'Xtrain': X_Cool_train,
-                    'Xtest': X_Cool_test
-                })
 
             # upid_data_df = pd.DataFrame(data=X_test, columns=data_names)
             # result = unidimensional_monitoring(upid_data_df,
@@ -413,21 +413,21 @@ class createMonitorResu:
 
                     "T2UCL1": T2UCL1,
                     "QUCL": QUCL,
-                    "T2": T2[0][0],
-                    "Q": Q[0][0],
+                    "T2": T2[i][0],
+                    "Q": Q[i][0],
 
                     "Heat_T2UCL": Heat_T2UCL,
                     "Heat_QUCL": Heat_QUCL,
-                    "Heat_T2": Heat_T2[0][0],
-                    "Heat_Q": Heat_Q[0][0],
+                    "Heat_T2": Heat_T2[i][0],
+                    "Heat_Q": Heat_Q[i][0],
                     "Roll_T2UCL": Roll_T2UCL,
                     "Roll_QUCL": Roll_QUCL,
-                    "Roll_T2": Roll_T2[0][0],
-                    "Roll_Q": Roll_Q[0][0],
+                    "Roll_T2": Roll_T2[i][0],
+                    "Roll_Q": Roll_Q[i][0],
                     "Cool_T2UCL": Cool_T2UCL,
                     "Cool_QUCL": Cool_QUCL,
-                    "Cool_T2": Cool_T2[0][0],
-                    "Cool_Q": Cool_Q[0][0]
+                    "Cool_T2": Cool_T2[i][0],
+                    "Cool_Q": Cool_Q[i][0]
                 })
             else:
                 monitor_result.append({
@@ -439,17 +439,20 @@ class createMonitorResu:
 
                     "T2UCL1": T2UCL1,
                     "QUCL": QUCL,
-                    "T2": T2[0][0],
-                    "Q": Q[0][0],
+                    "T2": T2[i][0],
+                    "Q": Q[i][0],
 
                     "Heat_T2UCL": Heat_T2UCL,
                     "Heat_QUCL": Heat_QUCL,
-                    "Heat_T2": Heat_T2[0][0],
-                    "Heat_Q": Heat_Q[0][0],
+                    "Heat_T2": Heat_T2[i][0],
+                    "Heat_Q": Heat_Q[i][0],
                     "Roll_T2UCL": Roll_T2UCL,
                     "Roll_QUCL": Roll_QUCL,
-                    "Roll_T2": Roll_T2[0][0],
-                    "Roll_Q": Roll_Q[0][0]
+                    "Roll_T2": Roll_T2[i][0],
+                    "Roll_Q": Roll_Q[i][0]
                 })
+
+
+
 
         return monitor_result, 200

@@ -399,8 +399,8 @@ def sqlselect_bytime(selection, ismissing, tgtwidthSelect, tgtlengthSelect, tgtt
                 SQL+=j
             SQL+=ASC+Limit
             # print(SQL)
-            return SQL
-    return "select "+select+" from app.deba_dump_data "+ASC+Limit
+            return SQL + " order by toc"
+    return "select "+select+" from app.deba_dump_data "+ASC+Limit + " order by toc"
 
 
 def new_getData(selection, ismissing, tgtwidthSelect, tgtlengthSelect, tgtthicknessSelect, tocSelect, UpidSelect, Platetypes, AscOption, Limition):
@@ -436,7 +436,7 @@ def getData_bytime(selection, ismissing, tgtwidthSelect, tgtlengthSelect, tgtthi
 
     SQL = sqlselect_bytime(selection, ismissing, tgtwidthSelect, tgtlengthSelect, tgtthicknessSelect, tocSelect, UpidSelect, Platetypes, AscOption, Limition)
     # print("new_getData")
-    # print(SQL)
+    print(SQL)
 
     # conn = psycopg2.connect(database='BSData20190713', user='postgres', password='616616', host='219.216.80.18',port='5432')
     # conn = psycopg2.connect(database='bg', user='postgres', password='woshimima', host='202.118.21.236',port='5432')
