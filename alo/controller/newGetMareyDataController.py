@@ -10,6 +10,18 @@ class newComputeMareyData:
     def __init__(self, type, upid, start_time, end_time, steelspec, tgtplatethickness):
 
         rows, col_names = GetMareyData.getMareyData(type, upid, start_time, end_time, steelspec, tgtplatethickness)
+        flag, _ = GetMareyData.getMareyFlag(upid, start_time, end_time)
+
+        self.flag = {}
+        for item in flag:
+            label = 0
+            if item[2] == 0:
+                flags = item[1]['method1']['data']
+                if np.array(flags).sum() == 5:
+                    label = 1
+            elif item[2] == 1:
+                label = 404
+            self.flag[item[0]] = label
 
         self.marey_data = pd.DataFrame(data=rows, columns=col_names).dropna(axis=0, how='all').reset_index(drop=True)
         # self.marey_data.cooling_start_temp = self.marey_data.cooling_start_temp.replace('None',0)
@@ -98,6 +110,11 @@ class newComputeMareyData:
             fm_name = ['FmStart', 'FmF3Pass', 'FmL3Pass', 'FmEnd']
             cc_name = ['CcStart', 'CcDQEnd', 'CcACCEnd']
 
+            try:
+                flag = self.flag[upids[i]]
+            except:
+                flag = 404
+
             # 加热工序站点时间计算
             ## realTime
             fu_discharge_time = plate_data.discharge_time
@@ -139,14 +156,16 @@ class newComputeMareyData:
                     stops.append({'station': {'key': '0201', 'name': rm_name[0], 'distance': 240.0, 'zone': '2'}, 'realTime': str(rmstart_time),
                                   'time': str(rmstart_time)})
                     rmf3pass_time = dt.datetime.strptime(rolling_data.iloc[rm_pass - 1,].finishtime[0:14], "%Y%m%d%H%M%S")
-                    stops.append({'station': {'key': '0202', 'name': rm_name[1], 'distance': 280.0, 'zone': '2'}, 'realTime': str(rmf3pass_time),
+                    rmf3zp = rolling_data.iloc[0:3, ].zeropoint.apply(lambda x: round(x, 5)).values.tolist()
+                    stops.append({'station': {'key': '0202', 'name': rm_name[1], 'distance': 280.0, 'zone': '2', 'zeropoint': rmf3zp}, 'realTime': str(rmf3pass_time),
                                   'time': str(rmf3pass_time)})
                 elif rm_pass > 3 and rm_pass <= 6:
                     rmstart_time = dt.datetime.strptime(rolling_data.iloc[0,].starttime[0:14], "%Y%m%d%H%M%S")
                     stops.append({'station': {'key': '0201', 'name': rm_name[0], 'distance': 240.0, 'zone': '2'}, 'realTime': str(rmstart_time),
                                   'time': str(rmstart_time)})
                     rmf3pass_time = dt.datetime.strptime(rolling_data.iloc[2,].finishtime[0:14], "%Y%m%d%H%M%S")
-                    stops.append({'station': {'key': '0202', 'name': rm_name[1], 'distance': 280.0, 'zone': '2'}, 'realTime': str(rmf3pass_time),
+                    rmf3zp = rolling_data.iloc[0:3, ].zeropoint.apply(lambda x: round(x, 5)).values.tolist()
+                    stops.append({'station': {'key': '0202', 'name': rm_name[1], 'distance': 280.0, 'zone': '2', 'zeropoint': rmf3zp}, 'realTime': str(rmf3pass_time),
                                   'time': str(rmf3pass_time)})
                     rml3pass_time = dt.datetime.strptime(rolling_data.iloc[rm_pass - 1,].starttime[0:14], "%Y%m%d%H%M%S")
                     stops.append({'station': {'key': '0203', 'name': rm_name[2], 'distance': 320.0, 'zone': '2'}, 'realTime': str(rml3pass_time),
@@ -156,7 +175,8 @@ class newComputeMareyData:
                     stops.append({'station': {'key': '0201', 'name': rm_name[0], 'distance': 240.0, 'zone': '2'}, 'realTime': str(rmstart_time),
                                   'time': str(rmstart_time)})
                     rmf3pass_time = dt.datetime.strptime(rolling_data.iloc[2,].finishtime[0:14], "%Y%m%d%H%M%S")
-                    stops.append({'station': {'key': '0202', 'name': rm_name[1], 'distance': 280.0, 'zone': '2'}, 'realTime': str(rmf3pass_time),
+                    rmf3zp = rolling_data.iloc[0:3, ].zeropoint.apply(lambda x: round(x, 5)).values.tolist()
+                    stops.append({'station': {'key': '0202', 'name': rm_name[1], 'distance': 280.0, 'zone': '2', 'zeropoint': rmf3zp}, 'realTime': str(rmf3pass_time),
                                   'time': str(rmf3pass_time)})
                     rml3pass_time = dt.datetime.strptime(rolling_data.iloc[rm_pass - 3,].starttime[0:14], "%Y%m%d%H%M%S")
                     stops.append({'station': {'key': '0203', 'name': rm_name[2], 'distance': 320.0, 'zone': '2'}, 'realTime': str(rml3pass_time),
@@ -182,7 +202,8 @@ class newComputeMareyData:
                     stops.append({'station': {'key': '0302', 'name': fm_name[1], 'distance': 440.0, 'zone': '3'}, 'realTime': str(fmf3pass_time),
                                   'time': str(fmf3pass_time)})
                     fml3pass_time = dt.datetime.strptime(rolling_data.iloc[m_total_pass - 1,].starttime[0:14], "%Y%m%d%H%M%S")
-                    stops.append({'station': {'key': '0303', 'name': fm_name[2], 'distance': 480.0, 'zone': '3'}, 'realTime': str(fml3pass_time),
+                    fml3zp = rolling_data.iloc[m_total_pass-3:m_total_pass, ].zeropoint.apply(lambda x: round(x, 5)).values.tolist()
+                    stops.append({'station': {'key': '0303', 'name': fm_name[2], 'distance': 480.0, 'zone': '3', 'zeropoint': fml3zp}, 'realTime': str(fml3pass_time),
                                   'time': str(fml3pass_time)})
                 elif fm_pass > 6:
                     fmstart_time = dt.datetime.strptime(rolling_data.iloc[rm_pass,].starttime[0:14], "%Y%m%d%H%M%S")
@@ -192,7 +213,8 @@ class newComputeMareyData:
                     stops.append({'station': {'key': '0302', 'name': fm_name[1], 'distance': 440.0, 'zone': '3'}, 'realTime': str(fmf3pass_time),
                                   'time': str(fmf3pass_time)})
                     fml3pass_time = dt.datetime.strptime(rolling_data.iloc[m_total_pass-3,].starttime[0:14], "%Y%m%d%H%M%S")
-                    stops.append({'station': {'key': '0303', 'name': fm_name[2], 'distance': 480.0, 'zone': '3'}, 'realTime': str(fml3pass_time),
+                    fml3zp = rolling_data.iloc[m_total_pass-3:m_total_pass, ].zeropoint.apply(lambda x: round(x, 5)).values.tolist()
+                    stops.append({'station': {'key': '0303', 'name': fm_name[2], 'distance': 480.0, 'zone': '3', 'zeropoint': fml3zp}, 'realTime': str(fml3pass_time),
                                   'time': str(fml3pass_time)})
                     fmend_time    = dt.datetime.strptime(rolling_data.iloc[m_total_pass-1,].finishtime[0:14], "%Y%m%d%H%M%S")
                     stops.append({'station': {'key': '0304', 'name': fm_name[3], 'distance': 520.0, 'zone': '3'}, 'realTime': str(fmend_time),
@@ -236,6 +258,7 @@ class newComputeMareyData:
                 mareydata.append({'upid': plate_data.upid,
                                   'slabid': plate_data.slabid,
                                   'toc': str(plate_data.toc),
+                                  'flag': flag,
                                   'steelspec': plate_data.steelspec,
                                   'productcategory': plate_data.productcategory,
 
@@ -304,6 +327,7 @@ class newComputeMareyData:
                 mareydata.append({'upid': plate_data.upid,
                                   'slabid': plate_data.slabid,
                                   'toc': str(plate_data.toc),
+                                  'flag': flag,
                                   'steelspec': plate_data.steelspec,
                                   'productcategory': plate_data.productcategory,
 

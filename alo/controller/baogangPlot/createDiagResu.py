@@ -60,21 +60,20 @@ class PCATEST:
                         1. / h0)
         n = Xtest.shape[0]
         m = Xtest.shape[1]
-        XtrainTest = (Xtest - np.tile(X_mean, (n, 1))) / np.tile(X_std, (n, 1))
-        X = np.concatenate((Xtrain,XtrainTest),axis=0)  
+
+        Xtest = (Xtest - np.tile(X_mean, (n, 1))) / np.tile(X_std, (n, 1))
         P = np.matrix(P)
         [r, y] = (P * P.T).shape
         I = np.eye(r, y)
         T2 = np.zeros((n, 1))
         Q = np.zeros((n, 1))
         for i in range(n):
-            T2[i] = np.matrix(X[i, :]) * P * np.matrix(
-                (lamda[np.ix_(np.arange(m - num_pc, m), np.arange(m - num_pc, m))])).I * P.T * np.matrix(X[i, :]).T
-            
-            Q[i] = np.matrix(X[i, :]) * (I - P * P.T) * np.matrix(X[i, :]).T
-            
+            T2[i] = np.matrix(Xtest[i, :]) * P * np.matrix(
+                (lamda[np.ix_(np.arange(m - num_pc, m), np.arange(m - num_pc, m))])).I * P.T * np.matrix(Xtest[i, :]).T
+            Q[i] = np.matrix(Xtest[i, :]) * (I - P * P.T) * np.matrix(Xtest[i, :]).T
+
         test_Num = 0
-        S = np.array(np.matrix(X[test_Num, :]) * P[:, np.arange(0, num_pc)])
+        S = np.array(np.matrix(Xtest[test_Num, :]) * P[:, np.arange(0, num_pc)])
         S = S[0]
         r = []
         for i in range(num_pc):
@@ -83,12 +82,12 @@ class PCATEST:
         cont = np.zeros((len(r), m))
         for i in [len(r) - 1]:
             for j in range(m):
-                cont[i][j] = np.fabs(S[i] / D[i] * P[j, i] * X[test_Num, j])
+                cont[i][j] = np.fabs(S[i] / D[i] * P[j, i] * Xtest[test_Num, j])
 
         CONTJ = []
         for j in range(m):
             CONTJ.append(np.sum(cont[:, j]))
-        e = np.matrix(X[test_Num, :]) * (I - P * P.T)
+        e = np.matrix(Xtest[test_Num, :]) * (I - P * P.T)
         e = np.array(e)[0]
         contq = e ** 2
         return T2UCL1, T2UCL2, QUCL, T2, Q, CONTJ, contq

@@ -315,7 +315,7 @@ def new_modeldata(parser,selection, limit):
     SQL = SQL + ' and dd.status_cooling = ' + str(status_cooling) + " "
     Limit = ' ORDER BY dd.toc  DESC Limit ' + str(limit)
     SQL = 'select ' + select + lefttable + SQL + Limit
-    # print(SQL)
+    # print('Other Data: ', SQL)
     data, col_names = getLabelData(SQL)
     return data, col_names, status_cooling, fqcflag
 

@@ -90,7 +90,9 @@ class GetMareyData:
         (case when lcps.vc_flow_top_16 != 0 then 1 else 0 end) +
         (case when lcps.vc_flow_top_17 != 0 then 1 else 0 end) +
         (case when lcps.vc_flow_top_18 != 0 then 1 else 0 end) +
-        (case when lcps.vc_flow_top_19 != 0 then 1 else 0 end)) over (partition by lmpd.upid, lmpt.pass) as acc_count
+        (case when lcps.vc_flow_top_19 != 0 then 1 else 0 end)) over (partition by lmpd.upid, lmpt.pass) as acc_count,
+        
+        l2mppr.zeropoint
         
         from (dcenter.l2_m_pass_times lmpt 
         right join dcenter.l2_fu_flftr60 l2ff60 on lmpt.upid = l2ff60.upid
@@ -99,6 +101,7 @@ class GetMareyData:
         left join dcenter.l2_cc_pdi lcp on lmpt.slabid = lcp.slab_no)
         left join dcenter.l2_cc_postcalc lcpc on lmpt.slabid = lcpc.slab_no
         left join dcenter.l2_cc_preset lcps on lmpt.slabid = lcps.slab_no
+        left join dcenter.l2_m_psc_pre_run l2mppr on l2mppr.slabid = lmpt.slabid
         '''
 
         SQLquery = (SQLQueryStations if (type=="stations") else SQLQueryTimes) + '''
@@ -137,13 +140,38 @@ class GetMareyData:
         conn.close()
         return rows, col_names
 
+    @staticmethod
+    def getMareyFlag(upid, start_time, end_time):
+        SQLQueryFQC = '''
+                select
+                dd.upid,
+                dd.fqc_label,
+                dd.status_fqc
 
-# if __name__ == '__main__':
-#     # print(readConfig())
-#     print( GetMareyData.getMareyData(upid='all',
-#                                      start_time='2018-11-02 00:00:00',
-#                                      end_time='2018-11-04 23:00:00',
-#                                      steelspec='all',
-#                                      tgtplatethickness=['all'] #[2.8, 3.5]
-#                                      )
-#            )
+                from app.deba_dump_data dd
+                '''
+
+        SQLquery = SQLQueryFQC + '''
+                    where {upid} 
+                    and {start_time} 
+                    and {end_time} 
+                    order by dd.toc
+                    '''.format(upid='1=1' if upid == 'all' else "dd.upid = '" + str(upid) + "'",
+                               start_time='1=1' if start_time == 'all' else "dd.toc >= '" + str(start_time) + "'::timestamp ",
+                               end_time='1=1' if end_time == 'all' else "dd.toc <= '" + str(end_time) + "'::timestamp ")
+
+        configArr = readConfig()
+        conn = psycopg2.connect(database=configArr[0], user=configArr[1], password=configArr[2], host=configArr[3], port=configArr[4])
+        # print(SQLquery)
+        cursor = conn.cursor()
+        cursor.execute(SQLquery)
+        rows = cursor.fetchall()
+
+        # Extract the column names
+        col_names = []
+        for elt in cursor.description:
+            col_names.append(elt[0])
+
+        conn.close()
+        return rows, col_names
+

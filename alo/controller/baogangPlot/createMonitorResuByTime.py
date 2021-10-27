@@ -4,10 +4,14 @@ createDiagResu
 # https://scikit-learn.org/stable/modules/preprocessing.html#scaling-features-to-a-range
 import pandas as pd
 import numpy as np
+import traceback
+import json
 from sklearn import preprocessing
 from scipy.stats import f
 from scipy.stats import norm
 from ...utils import getData_bytime
+from ...api.singelSteel import data_names, without_cooling_data_names, data_names_meas
+from ...models.monitorResuModel import getMonitorTrainData
 import copy
 import datetime
 
@@ -60,21 +64,21 @@ class PCATEST:
                         1. / h0)
         n = Xtest.shape[0]
         m = Xtest.shape[1]
-        XtrainTest = (Xtest - np.tile(X_mean, (n, 1))) / np.tile(X_std, (n, 1))
-        X = np.concatenate((Xtrain,XtrainTest),axis=0)  
+
+        Xtest = (Xtest - np.tile(X_mean, (n, 1))) / np.tile(X_std, (n, 1))
         P = np.matrix(P)
         [r, y] = (P * P.T).shape
         I = np.eye(r, y)
         T2 = np.zeros((n, 1))
         Q = np.zeros((n, 1))
         for i in range(n):
-            T2[i] = np.matrix(X[i, :]) * P * np.matrix(
-                (lamda[np.ix_(np.arange(m - num_pc, m), np.arange(m - num_pc, m))])).I * P.T * np.matrix(X[i, :]).T
+            T2[i] = np.matrix(Xtest[i, :]) * P * np.matrix(
+                (lamda[np.ix_(np.arange(m - num_pc, m), np.arange(m - num_pc, m))])).I * P.T * np.matrix(Xtest[i, :]).T
             
-            Q[i] = np.matrix(X[i, :]) * (I - P * P.T) * np.matrix(X[i, :]).T
+            Q[i] = np.matrix(Xtest[i, :]) * (I - P * P.T) * np.matrix(Xtest[i, :]).T
             
         test_Num = 0
-        S = np.array(np.matrix(X[test_Num, :]) * P[:, np.arange(0, num_pc)])
+        S = np.array(np.matrix(Xtest[test_Num, :]) * P[:, np.arange(0, num_pc)])
         S = S[0]
         r = []
         for i in range(num_pc):
@@ -83,12 +87,12 @@ class PCATEST:
         cont = np.zeros((len(r), m))
         for i in [len(r) - 1]:
             for j in range(m):
-                cont[i][j] = np.fabs(S[i] / D[i] * P[j, i] * X[test_Num, j])
+                cont[i][j] = np.fabs(S[i] / D[i] * P[j, i] * Xtest[test_Num, j])
 
         CONTJ = []
         for j in range(m):
             CONTJ.append(np.sum(cont[:, j]))
-        e = np.matrix(X[test_Num, :]) * (I - P * P.T)
+        e = np.matrix(Xtest[test_Num, :]) * (I - P * P.T)
         e = np.array(e)[0]
         contq = e ** 2
         return T2UCL1, T2UCL2, QUCL, T2, Q, CONTJ, contq
@@ -280,23 +284,325 @@ class createMonitorResu:
         except Exception:
             self.paramsIllegal = True
 
-    def run(self, otherData, data_names, data_names_meas, sorttype, status_cooling, fqcflag):
+    def run(self, request_bodys, tocs, sorttype, limit):
         '''
         run
         '''
-        ismissing = {
-            'status_stats': True,
-            'status_cooling': True if status_cooling == 0 else False,
-            'status_fqc': True if fqcflag == 0 else False
-        }
-        data, columns = getData_bytime(['upid', 'platetype', 'tgtwidth', 'tgtlength', 'tgtthickness', 'stats', 'fqc_label', 'toc'],
-                                       ismissing, [], [], [],
-                                       [self.start_time, self.end_time],
-                                       [], [], '', '')
-        data_df = pd.DataFrame(data=data, columns=columns).dropna(axis=0, how='any').reset_index(drop=True)
-        if len(data_df) == 0:
-            return [], 204
+        monitor_result = {}
+        batch_monitor_result = self.getBatchMonitorResult(request_bodys, tocs, sorttype, limit)
+        for item in batch_monitor_result:
+            monitor_result[item["upid"]] = item
 
+        # 非合并的板的处理：
+        nobatch_monitor_result = self.getNoBatchMonitorResult(monitor_result, request_bodys, tocs, sorttype, limit)
+        for item in nobatch_monitor_result:
+            monitor_result[item["upid"]] = item
+
+        return monitor_result, 200
+
+    def getBatchMonitorResult(self, request_bodys, tocs, sorttype, limit):
+        monitor_result = []
+        selection = ['dd.upid', 'lmpd.productcategory', 'dd.tgtwidth', 'dd.tgtlength', 'dd.tgtthickness', 'dd.stats', 'dd.fqc_label', 'dd.toc']
+        for index, reqBody in enumerate(request_bodys):
+            otherdata, _, status_cooling, fqcflag = self.getOtherData(reqBody, selection, limit)
+            if len(otherdata) == 0:
+                print('in batch' + str(index) + ', train data is less!')
+                continue
+
+            ismissing = {'status_stats': True,
+                         'status_cooling': True if status_cooling == 0 else False,
+                         'status_fqc': True if fqcflag == 0 else False}
+            data, columns = getData_bytime(['upid', 'platetype', 'tgtwidth', 'tgtlength', 'tgtthickness', 'stats', 'fqc_label', 'toc'],
+                                           ismissing, [], [], [],
+                                           tocs[index], [], [], '', '')
+            data_df = pd.DataFrame(data=data, columns=columns).dropna(axis=0, how='any').reset_index(drop=True)
+            if len(data_df) == 0:
+                print('in batch' + str(index) + ', test data is too less!')
+                continue
+
+            _data_names = self.getDataNames(status_cooling)
+            goodBoardData, badBoardData, goodBoardId, badBoardId, labelArr = self.getBoardData(otherdata, _data_names, fqcflag)
+
+            X_train = np.array(goodBoardData)
+            X_zero_std = np.where((np.std(X_train, axis=0)) <= 1e-10)
+            X_train = np.delete(X_train, X_zero_std, axis=1)
+            if len(X_train) < 5:
+                print('in batch' + str(index) + ', train data is too less!')
+                continue
+
+            for i in sorted(X_zero_std[0], reverse=True):
+                del _data_names[i]
+            X_Heat_train = X_train[:, 0:68]
+            X_Roll_train = X_train[:, 68:97]
+            if status_cooling == 0:
+                X_Cool_train = X_train[:, 97:117]
+
+            X_test = []
+            for i in range(len(data)):
+                one_process = []
+                for data_name in _data_names:
+                    one_process.append(data[i][5][data_name])
+                one_process = list(map(lambda x: 0.0 if x is None else x, one_process))
+                X_test.append(one_process)
+
+            try:
+                X_test = np.array(X_test)
+                X_test = np.delete(X_test, X_zero_std, axis=1)
+                T2UCL1, QUCL, T2, Q = PCATEST().stage_general_call({
+                    'Xtrain': X_train,
+                    'Xtest': X_test,
+                })
+
+                X_Heat_test = X_test[:, 0:68]
+                X_Roll_test = X_test[:, 68:97]
+                Heat_T2UCL, Heat_QUCL, Heat_T2, Heat_Q = PCATEST().stage_general_call({
+                    'Xtrain': X_Heat_train,
+                    'Xtest': X_Heat_test
+                })
+                Roll_T2UCL, Roll_QUCL, Roll_T2, Roll_Q = PCATEST().stage_general_call({
+                    'Xtrain': X_Roll_train,
+                    'Xtest': X_Roll_test
+                })
+                if status_cooling == 0:
+                    X_Cool_test = X_test[:, 97:117]
+                    Cool_T2UCL, Cool_QUCL, Cool_T2, Cool_Q = PCATEST().stage_general_call({
+                        'Xtrain': X_Cool_train,
+                        'Xtest': X_Cool_test
+                    })
+            except Exception:
+                print('in batch' + str(index) + ', there are some error when computing PCA result!')
+                print(traceback.format_exc())
+                continue
+
+            for i in range(len(data)):
+                upid = data[i][0]
+                platetype = data[i][1]
+                tgtwidth = data[i][2]
+                tgtlength = data[i][3]
+                tgtthickness = data[i][4]
+                try:
+                    fqc_label = 1 if np.array(data[i][6]['method1']['data']).sum() == 5 else 0
+                except:
+                    fqc_label = 404
+                toc = data[i][7]
+
+                if status_cooling == 0:
+                    monitor_result.append({
+                        "upid": upid,
+                        "toc": toc.strftime("%Y-%m-%d %H:%M:%S"),
+                        "fqc_label": fqc_label,
+
+                        "T2UCL1": T2UCL1,
+                        "QUCL": QUCL,
+                        "T2": T2[i][0],
+                        "Q": Q[i][0],
+
+                        "Heat_T2UCL": Heat_T2UCL,
+                        "Heat_QUCL": Heat_QUCL,
+                        "Heat_T2": Heat_T2[i][0],
+                        "Heat_Q": Heat_Q[i][0],
+                        "Roll_T2UCL": Roll_T2UCL,
+                        "Roll_QUCL": Roll_QUCL,
+                        "Roll_T2": Roll_T2[i][0],
+                        "Roll_Q": Roll_Q[i][0],
+                        "Cool_T2UCL": Cool_T2UCL,
+                        "Cool_QUCL": Cool_QUCL,
+                        "Cool_T2": Cool_T2[i][0],
+                        "Cool_Q": Cool_Q[i][0]
+                    })
+                else:
+                    monitor_result.append({
+                        "upid": upid,
+                        "toc": toc.strftime("%Y-%m-%d %H:%M:%S"),
+                        "fqc_label": fqc_label,
+
+                        "T2UCL1": T2UCL1,
+                        "QUCL": QUCL,
+                        "T2": T2[i][0],
+                        "Q": Q[i][0],
+
+                        "Heat_T2UCL": Heat_T2UCL,
+                        "Heat_QUCL": Heat_QUCL,
+                        "Heat_T2": Heat_T2[i][0],
+                        "Heat_Q": Heat_Q[i][0],
+                        "Roll_T2UCL": Roll_T2UCL,
+                        "Roll_QUCL": Roll_QUCL,
+                        "Roll_T2": Roll_T2[i][0],
+                        "Roll_Q": Roll_Q[i][0]
+                    })
+
+        return monitor_result
+
+    def getNoBatchMonitorResult(self, _monitor_result, request_bodys, tocs, sorttype, limit):
+        monitor_result = []
+        selection = ['dd.upid', 'lmpd.productcategory', 'dd.tgtwidth', 'dd.tgtlength', 'dd.tgtthickness', 'dd.stats', 'dd.fqc_label', 'dd.toc', 'dd.status_cooling']
+        noCooling_otherdata, hasCooling_otherdata = self.getNoBatchOtherData(request_bodys, selection, limit)
+        ismissing = {'status_stats': True, 'status_fqc': True}
+        data, columns = getData_bytime(['upid', 'platetype', 'tgtwidth', 'tgtlength', 'tgtthickness', 'stats', 'fqc_label', 'toc', 'status_cooling'],
+                                       ismissing, [], [], [],
+                                       [self.start_time, self.end_time], [], [], '', '')
+        noCooling_data, hasCooling_data = [], []
+        for item in data:
+            try:
+                _monitor_result[item[0]]
+            except:
+                if item[8] == 0:
+                    hasCooling_data.append(item)
+                elif item[8] == 1:
+                    noCooling_data.append(item)
+        hasCooling_data_names = self.getDataNames(0)
+        noCooling_data_names = self.getDataNames(1)
+
+        noCooling_StatsData, _, _, _, _ = self.getBoardData(noCooling_otherdata, noCooling_data_names, 1)
+        noCooling_X_train = np.array(noCooling_StatsData)
+        noCooling_X_zero_std = np.where((np.std(noCooling_X_train, axis=0)) <= 1e-10)
+        noCooling_X_train = np.delete(noCooling_X_train, noCooling_X_zero_std, axis=1)
+        for i in sorted(noCooling_X_zero_std[0], reverse=True):
+            del noCooling_data_names[i]
+
+        hasCooling_StatsData, _, _, _, _ = self.getBoardData(hasCooling_otherdata, hasCooling_data_names, 1)
+        hasCooling_X_train = np.array(hasCooling_StatsData)
+        hasCooling_X_zero_std = np.where((np.std(hasCooling_X_train, axis=0)) <= 1e-10)
+        hasCooling_X_train = np.delete(hasCooling_X_train, hasCooling_X_zero_std, axis=1)
+        for i in sorted(hasCooling_X_zero_std[0], reverse=True):
+            del hasCooling_data_names[i]
+
+        self.computeNoBatchMoni(monitor_result, hasCooling_X_train, hasCooling_X_zero_std, hasCooling_data, hasCooling_data_names, 0)
+        self.computeNoBatchMoni(monitor_result, noCooling_X_train, noCooling_X_zero_std, noCooling_data, noCooling_data_names, 1)
+
+        return monitor_result
+
+    def computeNoBatchMoni(self, monitor_result, X_train, X_zero_std, data, _data_names, status_cooling):
+        X_Heat_train = X_train[:, 0:68]
+        X_Roll_train = X_train[:, 68:97]
+        if status_cooling == 0:
+            X_Cool_train = X_train[:, 97:117]
+
+        X_test = []
+        for i in range(len(data)):
+            one_process = []
+            for data_name in _data_names:
+                one_process.append(data[i][5][data_name])
+            one_process = list(map(lambda x: 0.0 if x is None else x, one_process))
+            X_test.append(one_process)
+
+        try:
+            X_test = np.array(X_test)
+            X_test = np.delete(X_test, X_zero_std, axis=1)
+            T2UCL1, QUCL, T2, Q = PCATEST().stage_general_call({
+                'Xtrain': X_train,
+                'Xtest': X_test,
+            })
+
+            X_Heat_test = X_test[:, 0:68]
+            X_Roll_test = X_test[:, 68:97]
+            Heat_T2UCL, Heat_QUCL, Heat_T2, Heat_Q = PCATEST().stage_general_call({
+                'Xtrain': X_Heat_train,
+                'Xtest': X_Heat_test
+            })
+            Roll_T2UCL, Roll_QUCL, Roll_T2, Roll_Q = PCATEST().stage_general_call({
+                'Xtrain': X_Roll_train,
+                'Xtest': X_Roll_test
+            })
+            if status_cooling == 0:
+                X_Cool_test = X_test[:, 97:117]
+                Cool_T2UCL, Cool_QUCL, Cool_T2, Cool_Q = PCATEST().stage_general_call({
+                    'Xtrain': X_Cool_train,
+                    'Xtest': X_Cool_test
+                })
+        except Exception:
+            print(traceback.format_exc())
+            return
+
+        for i in range(len(data)):
+            upid = data[i][0]
+            platetype = data[i][1]
+            tgtwidth = data[i][2]
+            tgtlength = data[i][3]
+            tgtthickness = data[i][4]
+            try:
+                fqc_label = 1 if np.array(data[i][6]['method1']['data']).sum() == 5 else 0
+            except:
+                fqc_label = 404
+            toc = data[i][7]
+
+            if status_cooling == 0:
+                monitor_result.append({
+                    "upid": upid,
+                    "toc": toc.strftime("%Y-%m-%d %H:%M:%S"),
+                    "fqc_label": fqc_label,
+
+                    "T2UCL1": T2UCL1,
+                    "QUCL": QUCL,
+                    "T2": T2[i][0],
+                    "Q": Q[i][0],
+
+                    "Heat_T2UCL": Heat_T2UCL,
+                    "Heat_QUCL": Heat_QUCL,
+                    "Heat_T2": Heat_T2[i][0],
+                    "Heat_Q": Heat_Q[i][0],
+                    "Roll_T2UCL": Roll_T2UCL,
+                    "Roll_QUCL": Roll_QUCL,
+                    "Roll_T2": Roll_T2[i][0],
+                    "Roll_Q": Roll_Q[i][0],
+                    "Cool_T2UCL": Cool_T2UCL,
+                    "Cool_QUCL": Cool_QUCL,
+                    "Cool_T2": Cool_T2[i][0],
+                    "Cool_Q": Cool_Q[i][0]
+                })
+            else:
+                monitor_result.append({
+                    "upid": upid,
+                    "toc": toc.strftime("%Y-%m-%d %H:%M:%S"),
+                    "fqc_label": fqc_label,
+
+                    "T2UCL1": T2UCL1,
+                    "QUCL": QUCL,
+                    "T2": T2[i][0],
+                    "Q": Q[i][0],
+
+                    "Heat_T2UCL": Heat_T2UCL,
+                    "Heat_QUCL": Heat_QUCL,
+                    "Heat_T2": Heat_T2[i][0],
+                    "Heat_Q": Heat_Q[i][0],
+                    "Roll_T2UCL": Roll_T2UCL,
+                    "Roll_QUCL": Roll_QUCL,
+                    "Roll_T2": Roll_T2[i][0],
+                    "Roll_Q": Roll_Q[i][0]
+                })
+
+    def getOtherData(self, reqBody, selection, limit):
+        otherdata, _, status_cooling, fqcflag = getMonitorTrainData(reqBody, selection, limit)
+
+        # 如果拿到的数据过少，则放宽指标的要求. 但是 是否过冷却 和 是否考虑标签不能去除
+        if len(otherdata) <= 10:
+            reqBody['steelspec'] = []
+            otherdata, _, status_cooling, fqcflag = getMonitorTrainData(reqBody, selection, limit)
+            return otherdata, _, status_cooling, fqcflag
+        return otherdata, _, status_cooling, fqcflag
+
+    def getNoBatchOtherData(self, reqBody, selection, limit):
+        noCooling_reqBody = copy.deepcopy(reqBody[0])
+        noCooling_reqBody["steelspec"] = json.dumps([])
+        noCooling_reqBody["status_cooling"] = "1"
+        noCooling_reqBody["fqcflag"] = "0"
+        noCooling_otherdata, _, _, _ = getMonitorTrainData(noCooling_reqBody, selection, limit)
+
+        hasCooling_reqBody = copy.deepcopy(reqBody[0])
+        hasCooling_reqBody["steelspec"] = json.dumps([])
+        hasCooling_reqBody["status_cooling"] = "0"
+        hasCooling_reqBody["fqcflag"] = "0"
+        hasCooling_otherdata, _, _, _ = getMonitorTrainData(hasCooling_reqBody, selection, limit)
+
+        return noCooling_otherdata, hasCooling_otherdata
+
+    def getDataNames(self, status_cooling):
+        if status_cooling == 0:
+            return copy.deepcopy(data_names)
+        elif status_cooling == 1:
+            return copy.deepcopy(without_cooling_data_names)
+
+    def getBoardData(self, otherData, data_names, fqcflag):
         labelArr = []
         badBoardData = []
         goodBoardData = []
@@ -335,124 +641,5 @@ class createMonitorResu:
         goodBoardDf = pd.DataFrame(data=goodBoardData, columns=data_names).fillna(0)
         goodBoardDf['upid'] = goodBoardId
         goodBoardData = np.array(goodBoardData)
-        # badBoardData = np.array(badBoardData)
-
-        X_train = np.array(goodBoardData)
-        X_zero_std = np.where((np.std(X_train, axis=0)) <= 1e-10)
-        X_train = np.delete(X_train, X_zero_std, axis=1)
-
-        X_Heat_train = X_train[:, 0:68]
-        X_Roll_train = X_train[:, 68:97]
-        if status_cooling == 0:
-            X_Cool_train = X_train[:, 97:117]
-
-        if len(X_train) < 5:
-            return [], 202
-
-        for i in sorted(X_zero_std[0], reverse=True):
-            del data_names[i]
-
-        monitor_result = []
-        X_test = []
-        for i in range(len(data)):
-            one_process = []
-            for data_name in data_names:
-                one_process.append(data[i][5][data_name])
-            one_process = list(map(lambda x: 0.0 if x is None else x, one_process))
-            X_test.append(one_process)
-
-        X_test = np.array(X_test)
-        X_test = np.delete(X_test, X_zero_std, axis=1)
-        T2UCL1, QUCL, T2, Q = PCATEST().stage_general_call({
-            'Xtrain': X_train,
-            'Xtest': X_test,
-        })
-
-        X_Heat_test = X_test[:, 0:68]
-        X_Roll_test = X_test[:, 68:97]
-        Heat_T2UCL, Heat_QUCL, Heat_T2, Heat_Q = PCATEST().stage_general_call({
-            'Xtrain': X_Heat_train,
-            'Xtest': X_Heat_test
-        })
-        Roll_T2UCL, Roll_QUCL, Roll_T2, Roll_Q = PCATEST().stage_general_call({
-            'Xtrain': X_Roll_train,
-            'Xtest': X_Roll_test
-        })
-
-        if status_cooling == 0:
-            X_Cool_test = X_test[:, 97:117]
-            Cool_T2UCL, Cool_QUCL, Cool_T2, Cool_Q = PCATEST().stage_general_call({
-                'Xtrain': X_Cool_train,
-                'Xtest': X_Cool_test
-            })
-
-
-        for i in range(len(data)):
-            upid = data[i][0]
-            platetype = data[i][1]
-            tgtwidth = data[i][2]
-            tgtlength  = data[i][3]
-            tgtthickness = data[i][4]
-            fqc_label = 1 if np.array(data[i][6]['method1']['data']).sum() == 5 else 0
-            toc = data[i][7]
-
-            # upid_data_df = pd.DataFrame(data=X_test, columns=data_names)
-            # result = unidimensional_monitoring(upid_data_df,
-            #                                    goodBoardDf,
-            #                                    data_names,
-            #                                    data_names_meas,
-            #                                    0.25, 0.05, 0.01)
-
-            if status_cooling == 0:
-                monitor_result.append({
-                    "upid": upid,
-                    "toc": toc.strftime("%Y-%m-%d %H:%M:%S"),
-                    "fqc_label": fqc_label,
-
-                    # "one_dimen": result,
-
-                    "T2UCL1": T2UCL1,
-                    "QUCL": QUCL,
-                    "T2": T2[i][0],
-                    "Q": Q[i][0],
-
-                    "Heat_T2UCL": Heat_T2UCL,
-                    "Heat_QUCL": Heat_QUCL,
-                    "Heat_T2": Heat_T2[i][0],
-                    "Heat_Q": Heat_Q[i][0],
-                    "Roll_T2UCL": Roll_T2UCL,
-                    "Roll_QUCL": Roll_QUCL,
-                    "Roll_T2": Roll_T2[i][0],
-                    "Roll_Q": Roll_Q[i][0],
-                    "Cool_T2UCL": Cool_T2UCL,
-                    "Cool_QUCL": Cool_QUCL,
-                    "Cool_T2": Cool_T2[i][0],
-                    "Cool_Q": Cool_Q[i][0]
-                })
-            else:
-                monitor_result.append({
-                    "upid": upid,
-                    "toc": toc.strftime("%Y-%m-%d %H:%M:%S"),
-                    "fqc_label": fqc_label,
-
-                    # "one_dimen": result,
-
-                    "T2UCL1": T2UCL1,
-                    "QUCL": QUCL,
-                    "T2": T2[i][0],
-                    "Q": Q[i][0],
-
-                    "Heat_T2UCL": Heat_T2UCL,
-                    "Heat_QUCL": Heat_QUCL,
-                    "Heat_T2": Heat_T2[i][0],
-                    "Heat_Q": Heat_Q[i][0],
-                    "Roll_T2UCL": Roll_T2UCL,
-                    "Roll_QUCL": Roll_QUCL,
-                    "Roll_T2": Roll_T2[i][0],
-                    "Roll_Q": Roll_Q[i][0]
-                })
-
-
-
-
-        return monitor_result, 200
+        badBoardData = np.array(badBoardData)
+        return goodBoardData, badBoardData, goodBoardId, badBoardId, labelArr
