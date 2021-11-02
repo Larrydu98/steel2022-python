@@ -576,7 +576,7 @@ class createMonitorResu:
 
         # 如果拿到的数据过少，则放宽指标的要求. 但是 是否过冷却 和 是否考虑标签不能去除
         if len(otherdata) <= 10:
-            reqBody['steelspec'] = []
+            reqBody['steelspec'] = '[]'
             otherdata, _, status_cooling, fqcflag = getMonitorTrainData(reqBody, selection, limit)
             return otherdata, _, status_cooling, fqcflag
         return otherdata, _, status_cooling, fqcflag

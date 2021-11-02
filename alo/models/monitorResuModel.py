@@ -7,7 +7,7 @@ from ..utils import getLabelData
 def parserMoniRequArge(parser):
     label = ["slabthickness", "tgtdischargetemp", "tgtplatethickness", "tgtwidth", "tgtplatelength2", "tgttmplatetemp", "cooling_start_temp",
              "cooling_stop_temp", "cooling_rate1", "productcategory", "steelspec", "status_cooling", "fqcflag"]
-    par_label = ["steelspec", "status_cooling", "fqcflag", "toc"]
+    par_label = ["steelspec", "status_cooling", "fqcflag", "toc", "tgtplatethickness"]
     for index in label:
         parser.add_argument(index, type=str, required=True)
     parser.add_argument("toc", type=str, required=True)
@@ -80,9 +80,9 @@ def moni_filterSQL(args):
                 Query[index][0]/=1000
                 Query[index][1]/=1000
             if index=="tgtplatethickness":
-                SQL =SQL+ thicklabel+ ' > ' + str(Query[index][0]) +' and ' + thicklabel + ' < ' + str(Query[index][1]) +' and '
+                SQL =SQL+ thicklabel+ ' >= ' + str(Query[index][0]) +' and ' + thicklabel + ' <= ' + str(Query[index][1]) +' and '
             else:
-                SQL =SQL+tablename[index]+'.' + index + ' > ' + str(Query[index][0]) +' and ' + tablename[index] +'.' + index + ' < ' + str(Query[index][1]) +' and '
+                SQL =SQL+tablename[index]+'.' + index + ' >= ' + str(Query[index][0]) +' and ' + tablename[index] +'.' + index + ' <= ' + str(Query[index][1]) +' and '
     Query = {}
     label = ["productcategory", "steelspec"]
     table = ["lmpd","lmpd"]
