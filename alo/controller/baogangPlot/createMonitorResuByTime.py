@@ -321,7 +321,7 @@ class createMonitorResu:
                 continue
 
             _data_names = self.getDataNames(status_cooling)
-            goodBoardData, badBoardData, goodBoardId, badBoardId, labelArr = self.getBoardData(otherdata, _data_names, fqcflag)
+            goodBoardData, badBoardData, goodBoardId, badBoardId, labelArr, goodBoardDf = self.getBoardData(otherdata, _data_names, fqcflag)
 
             X_train = np.array(goodBoardData)
             X_zero_std = np.where((np.std(X_train, axis=0)) <= 1e-10)
@@ -347,11 +347,11 @@ class createMonitorResu:
 
             try:
                 X_test = np.array(X_test)
-                X_test = np.delete(X_test, X_zero_std, axis=1)
-                T2UCL1, QUCL, T2, Q = PCATEST().stage_general_call({
-                    'Xtrain': X_train,
-                    'Xtest': X_test,
-                })
+                # X_test = np.delete(X_test, X_zero_std, axis=1)
+                # T2UCL1, T2UCL2, QUCL, T2, Q, CONTJ, contq = PCATEST().general_call({
+                #     'Xtrain': X_train,
+                #     'Xtest': X_test,
+                # })
 
                 X_Heat_test = X_test[:, 0:68]
                 X_Roll_test = X_test[:, 68:97]
@@ -386,16 +386,22 @@ class createMonitorResu:
                     fqc_label = 404
                 toc = data[i][7]
 
+                # result, CONTJ_Pro, contq_Pro = self.getDiagnosisResultForOnePlate(X_train, X_test[i, :], goodBoardDf, _data_names, data_names_meas)
+
                 if status_cooling == 0:
                     monitor_result.append({
                         "upid": upid,
                         "toc": toc.strftime("%Y-%m-%d %H:%M:%S"),
                         "fqc_label": fqc_label,
 
-                        "T2UCL1": T2UCL1,
-                        "QUCL": QUCL,
-                        "T2": T2[i][0],
-                        "Q": Q[i][0],
+                        # "T2UCL1": T2UCL1,
+                        # "QUCL": QUCL,
+                        # "T2": T2[i][0],
+                        # "Q": Q[i][0],
+
+                        # "one_dimens": result,
+                        # "CONTJ": CONTJ_Pro,
+                        # "CONTQ": contq_Pro,
 
                         "Heat_T2UCL": Heat_T2UCL,
                         "Heat_QUCL": Heat_QUCL,
@@ -416,10 +422,14 @@ class createMonitorResu:
                         "toc": toc.strftime("%Y-%m-%d %H:%M:%S"),
                         "fqc_label": fqc_label,
 
-                        "T2UCL1": T2UCL1,
-                        "QUCL": QUCL,
-                        "T2": T2[i][0],
-                        "Q": Q[i][0],
+                        # "T2UCL1": T2UCL1,
+                        # "QUCL": QUCL,
+                        # "T2": T2[i][0],
+                        # "Q": Q[i][0],
+
+                        # "one_dimens": result,
+                        # "CONTJ": CONTJ_Pro,
+                        # "CONTQ": contq_Pro,
 
                         "Heat_T2UCL": Heat_T2UCL,
                         "Heat_QUCL": Heat_QUCL,
@@ -432,6 +442,36 @@ class createMonitorResu:
                     })
 
         return monitor_result
+
+    def getDiagnosisResultForOnePlate(self, X_train, X_test, goodBoardDf, data_names, data_names_meas):
+        X_test =X_test.reshape((1, len(X_test)))
+        T2UCL1, T2UCL2, QUCL, T2, Q, CONTJ, contq = PCATEST().general_call({
+            'Xtrain': X_train,
+            'Xtest': X_test,
+        })
+
+        CONTJ_Pro = []
+        maxCON = max(CONTJ)
+        minCON = min(CONTJ)
+        for item in CONTJ:
+            mid = (item - minCON) / (maxCON - minCON)
+            CONTJ_Pro.append(mid)
+
+        contq_Pro = []
+        maxContq = max(contq.tolist())
+        minContq = min(contq.tolist())
+        for item in contq.tolist():
+            mid = (item - minContq) / (maxContq - minContq)
+            contq_Pro.append(mid)
+
+        upid_data_df = pd.DataFrame(data=X_test, columns=data_names)
+        result = unidimensional_monitoring(upid_data_df,
+                                           goodBoardDf,
+                                           data_names,
+                                           data_names_meas,
+                                           0.25, 0.05, 0.01)
+        return result, CONTJ_Pro, contq_Pro
+
 
     def getNoBatchMonitorResult(self, _monitor_result, request_bodys, tocs, sorttype, limit):
         monitor_result = []
@@ -453,26 +493,26 @@ class createMonitorResu:
         hasCooling_data_names = self.getDataNames(0)
         noCooling_data_names = self.getDataNames(1)
 
-        noCooling_StatsData, _, _, _, _ = self.getBoardData(noCooling_otherdata, noCooling_data_names, 1)
+        noCooling_StatsData, _, _, _, _, noCooling_goodBoardDf = self.getBoardData(noCooling_otherdata, noCooling_data_names, 1)
         noCooling_X_train = np.array(noCooling_StatsData)
         noCooling_X_zero_std = np.where((np.std(noCooling_X_train, axis=0)) <= 1e-10)
         noCooling_X_train = np.delete(noCooling_X_train, noCooling_X_zero_std, axis=1)
         for i in sorted(noCooling_X_zero_std[0], reverse=True):
             del noCooling_data_names[i]
 
-        hasCooling_StatsData, _, _, _, _ = self.getBoardData(hasCooling_otherdata, hasCooling_data_names, 1)
+        hasCooling_StatsData, _, _, _, _, hasCooling_goodBoardDf = self.getBoardData(hasCooling_otherdata, hasCooling_data_names, 1)
         hasCooling_X_train = np.array(hasCooling_StatsData)
         hasCooling_X_zero_std = np.where((np.std(hasCooling_X_train, axis=0)) <= 1e-10)
         hasCooling_X_train = np.delete(hasCooling_X_train, hasCooling_X_zero_std, axis=1)
         for i in sorted(hasCooling_X_zero_std[0], reverse=True):
             del hasCooling_data_names[i]
 
-        self.computeNoBatchMoni(monitor_result, hasCooling_X_train, hasCooling_X_zero_std, hasCooling_data, hasCooling_data_names, 0)
-        self.computeNoBatchMoni(monitor_result, noCooling_X_train, noCooling_X_zero_std, noCooling_data, noCooling_data_names, 1)
+        self.computeNoBatchMoni(monitor_result, hasCooling_X_train, hasCooling_goodBoardDf, hasCooling_X_zero_std, hasCooling_data, hasCooling_data_names, 0)
+        self.computeNoBatchMoni(monitor_result, noCooling_X_train, noCooling_goodBoardDf, noCooling_X_zero_std, noCooling_data, noCooling_data_names, 1)
 
         return monitor_result
 
-    def computeNoBatchMoni(self, monitor_result, X_train, X_zero_std, data, _data_names, status_cooling):
+    def computeNoBatchMoni(self, monitor_result, X_train, goodBoardDf, X_zero_std, data, _data_names, status_cooling):
         X_Heat_train = X_train[:, 0:68]
         X_Roll_train = X_train[:, 68:97]
         if status_cooling == 0:
@@ -488,11 +528,11 @@ class createMonitorResu:
 
         try:
             X_test = np.array(X_test)
-            X_test = np.delete(X_test, X_zero_std, axis=1)
-            T2UCL1, QUCL, T2, Q = PCATEST().stage_general_call({
-                'Xtrain': X_train,
-                'Xtest': X_test,
-            })
+            # X_test = np.delete(X_test, X_zero_std, axis=1)
+            # T2UCL1, QUCL, T2, Q = PCATEST().stage_general_call({
+            #     'Xtrain': X_train,
+            #     'Xtest': X_test,
+            # })
 
             X_Heat_test = X_test[:, 0:68]
             X_Roll_test = X_test[:, 68:97]
@@ -526,16 +566,22 @@ class createMonitorResu:
                 fqc_label = 404
             toc = data[i][7]
 
+            # result, CONTJ_Pro, contq_Pro = self.getDiagnosisResultForOnePlate(X_train, X_test[i, :], goodBoardDf, _data_names, data_names_meas)
+
             if status_cooling == 0:
                 monitor_result.append({
                     "upid": upid,
                     "toc": toc.strftime("%Y-%m-%d %H:%M:%S"),
                     "fqc_label": fqc_label,
 
-                    "T2UCL1": T2UCL1,
-                    "QUCL": QUCL,
-                    "T2": T2[i][0],
-                    "Q": Q[i][0],
+                    # "T2UCL1": T2UCL1,
+                    # "QUCL": QUCL,
+                    # "T2": T2[i][0],
+                    # "Q": Q[i][0],
+
+                    # "one_dimens": result,
+                    # "CONTJ": CONTJ_Pro,
+                    # "CONTQ": contq_Pro,
 
                     "Heat_T2UCL": Heat_T2UCL,
                     "Heat_QUCL": Heat_QUCL,
@@ -556,10 +602,14 @@ class createMonitorResu:
                     "toc": toc.strftime("%Y-%m-%d %H:%M:%S"),
                     "fqc_label": fqc_label,
 
-                    "T2UCL1": T2UCL1,
-                    "QUCL": QUCL,
-                    "T2": T2[i][0],
-                    "Q": Q[i][0],
+                    # "T2UCL1": T2UCL1,
+                    # "QUCL": QUCL,
+                    # "T2": T2[i][0],
+                    # "Q": Q[i][0],
+
+                    # "one_dimens": result,
+                    # "CONTJ": CONTJ_Pro,
+                    # "CONTQ": contq_Pro,
 
                     "Heat_T2UCL": Heat_T2UCL,
                     "Heat_QUCL": Heat_QUCL,
@@ -642,4 +692,4 @@ class createMonitorResu:
         goodBoardDf['upid'] = goodBoardId
         goodBoardData = np.array(goodBoardData)
         badBoardData = np.array(badBoardData)
-        return goodBoardData, badBoardData, goodBoardId, badBoardId, labelArr
+        return goodBoardData, badBoardData, goodBoardId, badBoardId, labelArr, goodBoardDf

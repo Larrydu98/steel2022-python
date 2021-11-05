@@ -9,6 +9,7 @@ import pika, traceback
 import pandas as pd
 import numpy as np
 import os
+import copy
 from .singelSteel import new_modeldata, data_names, without_cooling_data_names, data_names_meas
 # path = os.getcwd()
 parser = reqparse.RequestParser(trim=True, bundle_errors=True)
@@ -110,9 +111,9 @@ class diagnosisDataByTimeApi(Resource):
         try:
             _data_names = []
             if status_cooling == 0:
-                _data_names = data_names
+                _data_names = copy.deepcopy(data_names)
             elif status_cooling == 1:
-                _data_names = without_cooling_data_names
+                _data_names = copy.deepcopy(without_cooling_data_names)
 
             createDiagResu_instance = createDiagResu(start_time, end_time)
             diag_result, status_code = createDiagResu_instance.run(data, _data_names, data_names_meas, sorttype, status_cooling, fqcflag)

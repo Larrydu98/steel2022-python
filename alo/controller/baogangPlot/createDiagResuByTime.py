@@ -5,6 +5,8 @@ createDiagResu
 import pandas as pd
 import numpy as np
 from sklearn import preprocessing
+import matplotlib.pyplot as plt
+import seaborn as sns
 from scipy.stats import f
 from scipy.stats import norm
 from ...utils import getData_bytime
@@ -141,11 +143,20 @@ class PCATEST:
 def unidimensional_monitoring(upid_data_df, good_data_df, col_names, data_names_meas, quantile_num, extremum_quantile_num, s_extremum_quantile_num):
     ## 获取同一规格钢板的取过程数据
     process_data = good_data_df[col_names]
-    process_data = process_data.drop(columns = data_names_meas).values
+    process_data = process_data.drop(columns=data_names_meas).values
 
     good_meas_data = good_data_df[data_names_meas]
     upid_meas_data = upid_data_df[data_names_meas]
-    good_meas_data = good_meas_data[good_meas_data.sum(axis = 1) > 0].values
+    good_meas_data = good_meas_data[good_meas_data.sum(axis=1) > 0].values
+
+    upid_process_data = upid_data_df.drop(columns=data_names_meas).values
+
+    plt.figure()
+    min_val = int(min(good_meas_data[:, 0])) + 1
+    max_val = int(max(good_meas_data[:, 0])) + 1
+    sns.displot(pd.Series(good_meas_data[:, 0]), bins=[i for i in range(min_val, max_val, 5)])
+    plt.grid()
+    plt.show()
 
     ## 计算原始过程数据的上下分位点
     lower_limit = np.quantile(process_data, quantile_num, axis=0)
@@ -159,7 +170,7 @@ def unidimensional_monitoring(upid_data_df, good_data_df, col_names, data_names_
     ## 查询此钢板的过程数据（若前端在点击马雷图或散点图前已经储存该数据，则此步骤可以省略）
     upid_data = upid_data_df.values[0]
     ## 对同一规格钢板过程数据进行归一化计算
-    norm_process_data = ((process_data - process_data.min()) / (process_data.max() - process_data.min()))#.fillna(0)
+    norm_process_data = ((process_data - process_data.min(axis=0)) / (process_data.max(axis=0) - process_data.min(axis=0)))#.fillna(0)
     ## 计算归一化后过程数据的上下分位点
     lower_limit_norm = np.quantile(norm_process_data, quantile_num, axis=0)
     upper_limit_norm = np.quantile(norm_process_data, 1 - quantile_num, axis=0)
@@ -171,7 +182,8 @@ def unidimensional_monitoring(upid_data_df, good_data_df, col_names, data_names_
     s_extremum_upper_limit_norm = np.quantile(norm_process_data, 1 - s_extremum_quantile_num, axis=0)
     ## 查询此钢板归一化后的过程数据
     # norm_upid_data = norm_process_data[good_data_df.upid == upid][col_names].values[0]
-    norm_upid_data = ((upid_data_df - process_data.min()) / (process_data.max() - process_data.min())).fillna(0).values[0]
+    norm_upid_data = ((upid_process_data - process_data.min(axis=0)) / (process_data.max(axis=0) - process_data.min(axis=0))).reshape(-1)
+    norm_upid_data[np.isnan(norm_upid_data)] = 0
     norm_upid_data[norm_upid_data > 1] = 1
     norm_upid_data[norm_upid_data < 0] = 0
     # ## 计算归一化后超限幅度
@@ -201,7 +213,7 @@ def unidimensional_monitoring(upid_data_df, good_data_df, col_names, data_names_
     meas_s_extremum_lower_limit = np.quantile(meas_item_data, s_extremum_quantile_num, axis=0)
     meas_s_extremum_upper_limit = np.quantile(meas_item_data, 1 - s_extremum_quantile_num, axis=0)
     ## 对同一规格钢板过程数据进行归一化计算
-    meas_norm_process_data = ((meas_item_data - meas_item_data.min()) / (meas_item_data.max() - meas_item_data.min()))#.fillna(0)
+    meas_norm_process_data = ((meas_item_data - meas_item_data.min(axis=0)) / (meas_item_data.max(axis=0) - meas_item_data.min(axis=0)))#.fillna(0)
     ## 计算归一化后过程数据的上下分位点
     meas_lower_limit_norm = np.quantile(meas_norm_process_data, quantile_num, axis=0)
     meas_upper_limit_norm = np.quantile(meas_norm_process_data, 1 - quantile_num, axis=0)
@@ -212,7 +224,7 @@ def unidimensional_monitoring(upid_data_df, good_data_df, col_names, data_names_
     meas_s_extremum_lower_limit_norm = np.quantile(meas_norm_process_data, s_extremum_quantile_num, axis=0)
     meas_s_extremum_upper_limit_norm = np.quantile(meas_norm_process_data, 1 - s_extremum_quantile_num, axis=0)
     ## 查询此钢板归一化后的过程数据
-    meas_norm_upid_data = ((upid_meas_data - meas_item_data.min()) / (meas_item_data.max() - meas_item_data.min())).values[0]
+    meas_norm_upid_data = ((upid_meas_data - meas_item_data.min(axis=0)) / (meas_item_data.max(axis=0) - meas_item_data.min(axis=0))).values[0]
 
     result = []
     proc_i = 0
@@ -347,7 +359,7 @@ class createDiagResu:
         if len(X_train) < 5:
             return [], 202
 
-
+        train_len = len(goodBoardDf)
         diag_result = []
         for i in range(len(data)):
             upid = data[i][0]
@@ -399,6 +411,7 @@ class createDiagResu:
                 "fqc_label": fqc_label,
 
                 "one_dimens": result,
+                "train_len": train_len,
 
                 "CONTJ": CONTJ_Pro,
                 "CONTQ": contq_Pro
