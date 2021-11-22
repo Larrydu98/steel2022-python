@@ -151,12 +151,12 @@ def unidimensional_monitoring(upid_data_df, good_data_df, col_names, data_names_
 
     upid_process_data = upid_data_df.drop(columns=data_names_meas).values
 
-    plt.figure()
-    min_val = int(min(good_meas_data[:, 0])) + 1
-    max_val = int(max(good_meas_data[:, 0])) + 1
-    sns.displot(pd.Series(good_meas_data[:, 0]), bins=[i for i in range(min_val, max_val, 5)])
-    plt.grid()
-    plt.show()
+    # plt.figure()
+    # min_val = int(min(good_meas_data[:, 0])) + 1
+    # max_val = int(max(good_meas_data[:, 0])) + 1
+    # sns.displot(pd.Series(good_meas_data[:, 0]), bins=[i for i in range(min_val, max_val, 5)])
+    # plt.grid()
+    # plt.show()
 
     ## 计算原始过程数据的上下分位点
     lower_limit = np.quantile(process_data, quantile_num, axis=0)

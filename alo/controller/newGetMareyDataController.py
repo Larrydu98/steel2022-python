@@ -87,6 +87,9 @@ class newComputeMareyData:
 
         for i in range(len(upids)):
             # print(upids[i])
+            # if upids[i] == '20708267000':
+            #     print('get')
+
             # 参数初始化
             stops = []
             ## 压缩系数
@@ -94,9 +97,11 @@ class newComputeMareyData:
             plate_data = self.marey_data.loc[upids[i]].loc[1]
             ## 去除重复道次数据
             if plate_data.shape != (31,):
-                plate_data = self.marey_data.loc[upids[i]].loc[1].iloc[0,]
-            rm_pass = plate_data.totalpassesrm
-            fm_pass = plate_data.totalpassesfm
+                plate_data = self.marey_data.loc[upids[i]].loc[1].iloc[0, ]
+            if np.isnan(plate_data.totalpassesrm) or np.isnan(plate_data.totalpassesfm):
+                continue
+            rm_pass = int(plate_data.totalpassesrm)
+            fm_pass = int(plate_data.totalpassesfm)
             m_total_pass = rm_pass + fm_pass
             m_pass_series = self.marey_data[self.marey_data.upid == upids[i]].pass_no
             rm_pass_ndarray = np.unique(m_pass_series[m_pass_series <= rm_pass].values)
