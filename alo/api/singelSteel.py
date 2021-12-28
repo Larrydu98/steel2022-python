@@ -263,6 +263,30 @@ def modeldata(parser, selection, startTime, endTime):
     return data, status_cooling
 
 
+def cate_modeldata(parser, selection, Limit):
+    SQL, status_cooling = filterSQL(parser)
+
+    select = ','.join(selection)
+    ismissing = ['dd.status_stats']
+    if(SQL!=''):
+        for i in ismissing:
+            SQL+= ' and '+i+'= '+'0'
+    if (SQL==''):
+        SQL="where "+SQL
+        for i in ismissing:
+            SQL+= ' '+i+'= '+'0'+' and '
+        SQL=SQL[:-4]
+
+    # SQL = SQL + ' and dd.status_cooling = ' + str(status_cooling) + " "
+    # Limit = ''' and dd.toc >= '{startTime}'::timestamp
+    #     and dd.toc <= '{endTime}'::timestamp; '''.format(startTime=startTime, endTime=endTime)
+
+    SQL = 'select ' + select + singleSQL_lefttable + SQL + Limit
+    # print(SQL)
+    data, col_names = getLabelData(SQL)
+    return data, status_cooling
+
+
 def modeldata_for_corr(parser, selection, startTime, endTime, limit_num):
     SQL, status_cooling = filterSQL(parser)
 
