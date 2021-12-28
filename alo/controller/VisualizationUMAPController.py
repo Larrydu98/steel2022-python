@@ -72,7 +72,7 @@ class getVisualizationUMAP:
         data_1_df = pd.DataFrame(data_1)
         data_2_df = pd.DataFrame(data_2)
         # data.extend(data_1).extend(data_2)
-        df = pd.concat([data_df, data_1_df, data_2_df], axis=0).drop_duplicates(subset=[0])
+        df = pd.concat([data_df, data_1_df, data_2_df], axis=0).drop_duplicates(subset=[0]).fillna(0)
         data = df.values.tolist()
 
         X = []

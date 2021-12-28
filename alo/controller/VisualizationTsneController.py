@@ -5,6 +5,7 @@ VisualizationTsneController
 
 import numpy as np
 import pandas as pd
+import math
 import datetime as dt
 from sklearn.manifold import TSNE
 from ..api.singelSteel import data_names, without_cooling_data_names, specifications
@@ -109,7 +110,7 @@ class getVisualizationTsne:
         data_1_df = pd.DataFrame(data_1)
         data_2_df = pd.DataFrame(data_2)
         # data.extend(data_1).extend(data_2)
-        df = pd.concat([data_df, data_1_df, data_2_df], axis=0).drop_duplicates(subset=[0])
+        df = pd.concat([data_df, data_1_df, data_2_df], axis=0).drop_duplicates(subset=[0]).fillna(0)
         data = df.values.tolist()
 
         X=[]
@@ -154,7 +155,7 @@ class getVisualizationTsne:
             single["slab_thickness"] = item[11]
             single["tgtdischargetemp"] = item[12]
             single["tgttmplatetemp"] = item[13]
-            single["cooling_start_temp"] = item[14]
+            single["cooling_start_temp"] =  item[14]
             single["cooling_stop_temp"] = item[15]
             single["cooling_rate1"] = item[16]
 
