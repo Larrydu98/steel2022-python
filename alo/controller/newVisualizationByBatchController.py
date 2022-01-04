@@ -210,7 +210,68 @@ class GetProcessVisualizationData:
     def getCool(self, box_num, divide_percent):
         if len(self.data) == 0:
             return 204, {}
-        return 200, {}
+
+        names = ['p1', 'p2', 'p3', 'p4', 'p6']
+        for name in names:
+            self.data[name] = self.data.apply(lambda x: x[0]['temp'][name] if x[2] == 0 else {'position': [], 'data': []}, axis=1)
+            self.sampledata[name] = self.sampledata.apply(lambda x: x[0]['temp'][name] if x[2] == 0 else {'position': [], 'data': []}, axis=1)
+        self.data.drop(columns='cooling', inplace=True)
+        self.sampledata.drop(columns='cooling', inplace=True)
+
+        pos_range = self.cool_split_range(box_num, divide_percent)
+
+        result = {}
+        for name in names:
+            data = [[] for _ in range(len(pos_range))]
+            for i in range(len(self.data)):
+                plate_data = self.data.iloc[i, :][name]
+                for index, value in enumerate(plate_data['position']):
+                    # 判断 value 在哪个区间
+                    val = value * 10
+                    for j in range(len(pos_range)):
+                        if j == 0 and val < pos_range[j][1]:
+                            data[j].append(plate_data['data'][index])
+                            break
+                        elif j == len(pos_range) - 1 and val > pos_range[j][1]:
+                            data[j].append(plate_data['data'][index])
+                            break
+                        elif val >= pos_range[j][0] and val <= pos_range[j][1]:
+                            data[j].append(plate_data['data'][index])
+                            break
+
+            sample_data = [[] for _ in range(len(pos_range))]
+            for i in range(len(self.sampledata)):
+                upid = self.sampledata.iloc[i, :].upid
+                plate_data = self.sampledata.iloc[i, :][name]
+                for index, value in enumerate(plate_data['position']):
+                    # 判断 value 在哪个区间
+                    val = value * 10
+                    for j in range(len(pos_range)):
+                        if j == 0 and val < pos_range[j][1]:
+                            sample_data[j].append({
+                                'upid': upid,
+                                'value': plate_data['data'][index],
+                                'position': val
+                            })
+                            break
+                        elif j == len(pos_range) - 1 and val > pos_range[j][1]:
+                            sample_data[j].append({
+                                'upid': upid,
+                                'value': plate_data['data'][index],
+                                'position': val
+                            })
+                            break
+                        elif val > pos_range[j][0] and val < pos_range[j][1]:
+                            sample_data[j].append({
+                                'upid': upid,
+                                'value': plate_data['data'][index],
+                                'position': val
+                            })
+                            break
+
+            result[name] = self.percentile(data, sample_data, self.deviation, self.limit)
+
+        return 200, result
 
     def heat_split_range(self, box_num):
         min_list = []
@@ -234,6 +295,29 @@ class GetProcessVisualizationData:
             span = (point[i + 1] - point[i]) / box_num
             for j in range(box_num):
                 pos_range.append([point[i] + span * j, point[i] + span * (j + 1)])
+
+        return pos_range
+
+    def cool_split_range(self, box_num, divide_percent):
+        span = divide_percent / box_num     # 单位：100%
+        pos_range = []
+        for i in range(box_num):
+            if i == box_num - 1:
+                pos_range.append([span * i, divide_percent])
+            else:
+                pos_range.append([span * i, span * (i + 1)])
+        last_point = 100 - divide_percent
+        center_span = (100 - divide_percent * 2) / box_num
+        for i in range(box_num):
+            if i == box_num - 1:
+                pos_range.append([divide_percent + center_span * i, last_point])
+            else:
+                pos_range.append([divide_percent + center_span * i, divide_percent + center_span * (i + 1)])
+        for i in range(box_num):
+            if i == box_num - 1:
+                pos_range.append([last_point + span * i, 100])
+            else:
+                pos_range.append([last_point + span * i, last_point + span * (i + 1)])
 
         return pos_range
 
@@ -261,11 +345,11 @@ class GetProcessVisualizationData:
         steel = []
         for i, data in enumerate(datas):
             steel.append({
-                "min": np.percentile(data, middeviation, axis=0),
-                "max": np.percentile(data, 100 - middeviation, axis=0),
-                "emin": np.percentile(data, exdeviation, axis=0),
-                "emax": np.percentile(data, 100 - exdeviation, axis=0),
-                "mean": np.percentile(data, 50, axis=0),
+                "min": np.percentile(data, middeviation, axis=0) if len(data) != 0 else 0,
+                "max": np.percentile(data, 100 - middeviation, axis=0) if len(data) != 0 else 0,
+                "emin": np.percentile(data, exdeviation, axis=0) if len(data) != 0 else 0,
+                "emax": np.percentile(data, 100 - exdeviation, axis=0) if len(data) != 0 else 0,
+                "mean": np.percentile(data, 50, axis=0) if len(data) != 0 else 0,
                 "sample": sample_datas[i]
             })
         return steel

@@ -28,7 +28,7 @@ class HeatVisualizationByBatch(Resource):
 class CoolVisualizationByBatch(Resource):
     def post(self, start_time, end_time, box_num, divide_percent, deviation, limitation):
         getProcessVisualizationData = GetProcessVisualizationData(parser, start_time, end_time, 'cool', deviation, limitation)
-        status_code, data = getProcessVisualizationData.getCool(box_num, divide_percent)
+        status_code, data = getProcessVisualizationData.getCool(int(box_num), int(divide_percent))
 
         return data, status_code, {'Access-Control-Allow-Origin': '*'}
 
