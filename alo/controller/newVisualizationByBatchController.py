@@ -65,8 +65,8 @@ class GetProcessVisualizationData:
                     select {select} 
                     {lefttable} 
                     where 
-                        dd.toc >= '{start_time}'::timestamp and dd.toc <= '{end_time}'::timestamp;
-                '''.format(select=select, lefttable=lefttable, start_time=start_time, end_time=end_time)
+                        dd.toc >= '{start_time}'::timestamp and dd.toc <= '{end_time}'::timestamp and {ismissing};
+                '''.format(select=select, lefttable=lefttable, start_time=start_time, end_time=end_time, ismissing=ismissing)
         sampledata, col_names = getLabelData(sampleSQL)
         self.sampledata = pd.DataFrame(data=sampledata, columns=col_names).dropna(axis=0, how='any').reset_index(drop=True)
 
