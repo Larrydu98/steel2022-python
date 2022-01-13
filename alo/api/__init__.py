@@ -38,4 +38,5 @@ from . import newGetMareyDataApi
 from . import diagnosisDataByTimeApi
 from . import monitorDataByTimeApi
 from . import newVisualizationByBatch
+from . import getEventDataApi
 # from . import modelPredictCsvAllFlagApi
