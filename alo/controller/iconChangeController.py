@@ -88,7 +88,7 @@ class eventChangeDataController:
         dq_count, acc_count, fine_rolling, rm_event_change, fm_event_change = [], [], [], [], []
         for i in range(len(upids)):
             # print(upids[i])
-            # if upids[i] == '20708267000':
+            # if upids[i] == '21203001000':
             #     print('get')
 
             # 参数初始化
@@ -241,6 +241,8 @@ class eventChangeDataController:
                     stops.append({'station': {'key': '0301', 'name': fm_name[0], 'distance': 400.0, 'zone': '3'},
                                   'realTime': str(fmstart_time),
                                   'time': str(fmstart_time)})
+                    fml3zp = rolling_data.iloc[m_total_pass - 3:m_total_pass, ].zeropoint.apply(
+                        lambda x: round(x, 5)).values.tolist()
                     fmf3pass_time = dt.datetime.strptime(rolling_data.iloc[m_total_pass - 1,].starttime[0:14],
                                                          "%Y%m%d%H%M%S")
                     stops.append({'station': {'key': '0302', 'name': fm_name[1], 'distance': 440.0, 'zone': '3'},
@@ -290,13 +292,11 @@ class eventChangeDataController:
                     if abs(statistics.mean(fml3zp) - temp_fm) > float(zeropoint_constrain):
                         if statistics.mean(fml3zp) - temp_fm > 0:
                             rm_event_change.append(
-                                {'index': i, 'value': float(statistics.mean(fml3zp)), 'upid': plate_data.upid,
-                                 'key': '0202', 'distance': 280.0, 'time': str(fml3pass_time), 'flag': 1
+                                {'index': i, 'value': float(statistics.mean(fml3zp)), 'upid': plate_data.upid, 'key': '0202', 'distance': 280.0,  'flag': 1
                                  })
                         else:
                             rm_event_change.append(
-                                {'index': i, 'value': float(statistics.mean(fml3zp)), 'upid': plate_data.upid,
-                                 'key': '0202', 'distance': 280.0, 'time': str(fml3pass_time), 'flag': 0
+                                {'index': i, 'value': float(statistics.mean(fml3zp)), 'upid': plate_data.upid, 'key': '0202', 'distance': 280.0, 'flag': 0
                                  })
                     temp_fm = statistics.mean(fml3zp)
                 else:
