@@ -1,10 +1,10 @@
 import numpy as np
 import pandas as pd
 import datetime as dt
-import time
 import math
 import statistics
 from collections import defaultdict
+from datetime import datetime,date,time
 
 from ..models.getEventDataDB import *
 
@@ -31,7 +31,8 @@ class eventChangeDataController:
         # self.marey_data.cooling_stop_temp = self.marey_data.cooling_stop_temp.replace('None',0)
         # self.marey_data.cooling_rate1 = self.marey_data.cooling_rate1.replace('None',0)
         if (type == "stations"):
-            index = pd.MultiIndex.from_arrays([self.marey_data.upid.values.tolist()], names=['upid'])
+            index = pd.MultiIndex.from_arrays([self.marey_data.upid.values.tolist()], names=['upid']
+                                              )
         else:
             index = pd.MultiIndex.from_arrays(
                 [self.marey_data.upid.values.tolist(), self.marey_data.pass_no.values.tolist()],
@@ -88,8 +89,8 @@ class eventChangeDataController:
         dq_count, acc_count, fine_rolling, rm_event_change, fm_event_change = [], [], [], [], []
         for i in range(len(upids)):
             # print(upids[i])
-            # if upids[i] == '21203001000':
-            #     print('get')
+            if upids[i] == '21311308000':
+                print('get')
 
             # 参数初始化
             stops = []
@@ -291,12 +292,14 @@ class eventChangeDataController:
                 if i != 0:
                     if abs(statistics.mean(fml3zp) - temp_fm) > float(zeropoint_constrain):
                         if statistics.mean(fml3zp) - temp_fm > 0:
-                            rm_event_change.append(
-                                {'index': i, 'value': float(statistics.mean(fml3zp)), 'upid': plate_data.upid, 'key': '0202', 'distance': 280.0,  'flag': 1
+                            fm_event_change.append(
+                                {'index': i, 'value': float(statistics.mean(fml3zp)), 'upid': plate_data.upid, 'key': '0302', 'distance': 480.0,  'flag': 1,
+                                 'time': str(fml3pass_time)
                                  })
                         else:
-                            rm_event_change.append(
-                                {'index': i, 'value': float(statistics.mean(fml3zp)), 'upid': plate_data.upid, 'key': '0202', 'distance': 280.0, 'flag': 0
+                            fm_event_change.append(
+                                {'index': i, 'value': float(statistics.mean(fml3zp)), 'upid': plate_data.upid, 'key': '0302', 'distance': 480.0, 'flag': 0,
+                                 'time': str(fml3pass_time)
                                  })
                     temp_fm = statistics.mean(fml3zp)
                 else:
@@ -435,7 +438,7 @@ class eventChangeDataController:
         res = {}
         res['dq_event_change'] = dq_event_change
         res['acc_event_change'] = acc_event_change
-        res['fmtotal_acc_event_change'] = acc_event_change
+        res['fmtotal_acc_event_change'] = fmtotal_acc_event_change
         res['rm_event_change'] = rm_event_change
         res['fm_event_change'] = fm_event_change
         return res
@@ -465,25 +468,46 @@ class eventChangeDataController:
                         if data[i] > status_flag:
                             res_index.append(
                                 {'index': i, 'value': int(data[i]), 'flag': 1, 'upid': mareydata[i]['upid'], 'key': '0400',
+                                 'time': mareydata[i]['stops'][-4]['time'],
                                  'name': 'CcStart', 'distance': 560.0
                                  })
                         else:
+                            time_delay = (datetime.strptime(mareydata[i]['stops'][-1]['time'], '%Y-%m-%d %H:%M:%S') - datetime.strptime(mareydata[i-1]['stops'][-4]['time'], '%Y-%m-%d %H:%M:%S')) / 2
+                            last_time = datetime.strptime(mareydata[i-1]['stops'][-4]['time'], '%Y-%m-%d %H:%M:%S')
+                            res_time = (last_time + time_delay).strftime('%Y-%m-%d %H:%M')
                             res_index.append(
                                 {'index': i, 'value': int(data[i]), 'flag': 0, 'upid': mareydata[i]['upid'], 'key': '0400',
+                                 'time': res_time,
                                  'name': 'CcStart', 'distance': 560.0
                                  })
                         status_flag = data[i]
                     else:
+                        if i == 260:
+                            print('debug')
                         if data[i] > status_flag:
                             res_index.append(
                                 {'index': i, 'value': int(data[i]), 'flag': 1, 'upid': mareydata[i]['upid'], 'key': '0402',
+                                 'time': mareydata[i]['stops'][-2]['time'],
                                  'name': 'CcACCEnd', 'distance': 600
                                  })
                         else:
-                            res_index.append(
-                                {'index': i, 'value': int(data[i]), 'flag': 0, 'upid': mareydata[i]['upid'], 'key': '0402',
-                                 'name': 'CcACCEnd', 'distance': 600
-                                 })
+                            if data[i] == 0:
+                                time_delay = (datetime.strptime(mareydata[i]['stops'][-2]['time'], '%Y-%m-%d %H:%M:%S') - datetime.strptime(mareydata[i - 1]['stops'][-4]['time'], '%Y-%m-%d %H:%M:%S')) / 2
+                                last_time = datetime.strptime(mareydata[i - 1]['stops'][-4]['time'], '%Y-%m-%d %H:%M:%S')
+                                res_time = (last_time + time_delay).strftime('%Y-%m-%d %H:%M')
+                                res_index.append(
+                                    {'index': i, 'value': int(data[i]), 'flag': 0, 'upid': mareydata[i]['upid'], 'key': '0402',
+                                     'time': res_time,
+                                     'name': 'CcACCEnd', 'distance': 600
+                                     })
+                            else:
+                                res_index.append(
+                                    {'index': i, 'value': int(data[i]), 'flag': 0, 'upid': mareydata[i]['upid'],
+                                     'key': '0402',
+                                     'time': mareydata[i]['stops'][-2]['time'],
+                                     'name': 'CcACCEnd', 'distance': 600
+                                     })
+
                         status_flag = data[i]
 
         if type == 'finish_rolling':
@@ -506,13 +530,16 @@ class eventChangeDataController:
             for i in range(len(res_set)):
                 if i != len(res_set) - 1:
                     if data[res_set[i]] > data[res_set[i] - 1]:
+                        print(i)
                         res_index.append({"index": res_set[i], "value": data[res_set[i]], 'flag': 1,
                                           'upid': mareydata[res_set[i]]['upid'], 'key': '0301', 'name': 'FmStart',
+                                          'time': mareydata[i]['stops'][10]['time'],
                                           'distance': 400
                                           })
                     else:
                         res_index.append({"index": res_set[i], "value": data[res_set[i]], 'flag': 0,
                                           'upid': mareydata[res_set[i]]['upid'], 'key': '0301', 'name': 'FmStart',
+                                          'time': mareydata[i]['stops'][10]['time'],
                                           'distance': 400
                                           })
         return res_index
