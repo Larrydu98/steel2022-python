@@ -89,8 +89,8 @@ class eventChangeDataController:
         dq_count, acc_count, fine_rolling, rm_event_change, fm_event_change = [], [], [], [], []
         for i in range(len(upids)):
             # print(upids[i])
-            if upids[i] == '21311308000':
-                print('get')
+            # if upids[i] == '21203007000':
+            #     print('get')
 
             # 参数初始化
             stops = []
@@ -173,6 +173,7 @@ class eventChangeDataController:
                           dt.datetime.strptime(rolling_data.iloc[0,].starttime[0:14], "%Y%m%d%H%M%S")).total_seconds()
             # 粗轧工序站点时间计算
             if rm_pass != 0:
+                new_rmf3pass_time = 0
                 if rm_pass <= 3:
                     rmstart_time = dt.datetime.strptime(rolling_data.iloc[0,].starttime[0:14], "%Y%m%d%H%M%S")
                     stops.append({'station': {'key': '0201', 'name': rm_name[0], 'distance': 240.0, 'zone': '2'},
@@ -180,6 +181,7 @@ class eventChangeDataController:
                                   'time': str(rmstart_time)})
                     rmf3pass_time = dt.datetime.strptime(rolling_data.iloc[rm_pass - 1,].finishtime[0:14],
                                                          "%Y%m%d%H%M%S")
+                    new_rmf3pass_time = rmf3pass_time
                     rmf3zp = rolling_data.iloc[0:3, ].zeropoint.apply(lambda x: round(x, 5)).values.tolist()
                     stops.append({'station': {'key': '0202', 'name': rm_name[1], 'distance': 280.0, 'zone': '2',
                                               'zeropoint': rmf3zp}, 'realTime': str(rmf3pass_time),
@@ -194,6 +196,7 @@ class eventChangeDataController:
                     stops.append({'station': {'key': '0202', 'name': rm_name[1], 'distance': 280.0, 'zone': '2',
                                               'zeropoint': rmf3zp}, 'realTime': str(rmf3pass_time),
                                   'time': str(rmf3pass_time)})
+                    new_rmf3pass_time = rmf3pass_time
                     rml3pass_time = dt.datetime.strptime(rolling_data.iloc[rm_pass - 1,].starttime[0:14],
                                                          "%Y%m%d%H%M%S")
                     stops.append({'station': {'key': '0203', 'name': rm_name[2], 'distance': 320.0, 'zone': '2'},
@@ -205,10 +208,12 @@ class eventChangeDataController:
                                   'realTime': str(rmstart_time),
                                   'time': str(rmstart_time)})
                     rmf3pass_time = dt.datetime.strptime(rolling_data.iloc[2,].finishtime[0:14], "%Y%m%d%H%M%S")
+                    new_rmf3pass_time = rmf3pass_time
                     rmf3zp = rolling_data.iloc[0:3, ].zeropoint.apply(lambda x: round(x, 5)).values.tolist()
                     stops.append({'station': {'key': '0202', 'name': rm_name[1], 'distance': 280.0, 'zone': '2',
                                               'zeropoint': rmf3zp}, 'realTime': str(rmf3pass_time),
                                   'time': str(rmf3pass_time)})
+
                     rml3pass_time = dt.datetime.strptime(rolling_data.iloc[rm_pass - 3,].starttime[0:14],
                                                          "%Y%m%d%H%M%S")
                     stops.append({'station': {'key': '0203', 'name': rm_name[2], 'distance': 320.0, 'zone': '2'},
@@ -224,12 +229,12 @@ class eventChangeDataController:
                         if statistics.mean(rmf3zp) - temp_rm > 0:
                             rm_event_change.append(
                                 {'index': i, 'value': float(statistics.mean(rmf3zp)), 'upid':  plate_data.upid,
-                                 'key': '0202', 'distance': 280.0, 'time': str(rmf3pass_time), 'flag': 1
+                                 'key': '0202', 'distance': 280.0, 'time': str(new_rmf3pass_time), 'flag': 1
                                  })
                         else:
                             rm_event_change.append(
                                 {'index': i, 'value': float(statistics.mean(rmf3zp)), 'upid':  plate_data.upid,
-                                 'key': '0202', 'distance': 280.0, 'time': str(rmf3pass_time), 'flag': 0
+                                 'key': '0202', 'distance': 280.0, 'time': str(new_rmf3pass_time), 'flag': 0
                                  })
                     temp_rm = statistics.mean(rmf3zp)
                 else:
@@ -237,6 +242,7 @@ class eventChangeDataController:
 
             # 精轧工序站点时间计算
             if fm_pass != 0:
+                new_fmf3pass_time = 0
                 if fm_pass <= 3:
                     fmstart_time = dt.datetime.strptime(rolling_data.iloc[rm_pass,].starttime[0:14], "%Y%m%d%H%M%S")
                     stops.append({'station': {'key': '0301', 'name': fm_name[0], 'distance': 400.0, 'zone': '3'},
@@ -246,6 +252,7 @@ class eventChangeDataController:
                         lambda x: round(x, 5)).values.tolist()
                     fmf3pass_time = dt.datetime.strptime(rolling_data.iloc[m_total_pass - 1,].starttime[0:14],
                                                          "%Y%m%d%H%M%S")
+                    new_fmf3pass_time = fmf3pass_time
                     stops.append({'station': {'key': '0302', 'name': fm_name[1], 'distance': 440.0, 'zone': '3'},
                                   'realTime': str(fmf3pass_time),
                                   'time': str(fmf3pass_time)})
@@ -256,11 +263,13 @@ class eventChangeDataController:
                                   'time': str(fmstart_time)})
                     fmf3pass_time = dt.datetime.strptime(rolling_data.iloc[rm_pass + 2,].finishtime[0:14],
                                                          "%Y%m%d%H%M%S")
-                    stops.append({'station': {'key': '0302', 'name': fm_name[1], 'distance': 440.0, 'zone': '3'},
+                    stops.append({'station/api/v1.0/model/newVisualization/': {'key': '0302', 'name': fm_name[1], 'distance': 440.0, 'zone': '3'},
                                   'realTime': str(fmf3pass_time),
                                   'time': str(fmf3pass_time)})
                     fml3pass_time = dt.datetime.strptime(rolling_data.iloc[m_total_pass - 1,].starttime[0:14],
                                                          "%Y%m%d%H%M%S")
+                    new_fmf3pass_time = fmf3pass_time
+
                     fml3zp = rolling_data.iloc[m_total_pass - 3:m_total_pass, ].zeropoint.apply(
                         lambda x: round(x, 5)).values.tolist()
                     stops.append({'station': {'key': '0303', 'name': fm_name[2], 'distance': 480.0, 'zone': '3',
@@ -278,6 +287,8 @@ class eventChangeDataController:
                                   'time': str(fmf3pass_time)})
                     fml3pass_time = dt.datetime.strptime(rolling_data.iloc[m_total_pass - 3,].starttime[0:14],
                                                          "%Y%m%d%H%M%S")
+                    new_fmf3pass_time = fmf3pass_time
+
                     fml3zp = rolling_data.iloc[m_total_pass - 3:m_total_pass, ].zeropoint.apply(
                         lambda x: round(x, 5)).values.tolist()
                     stops.append({'station': {'key': '0303', 'name': fm_name[2], 'distance': 480.0, 'zone': '3',
@@ -294,12 +305,12 @@ class eventChangeDataController:
                         if statistics.mean(fml3zp) - temp_fm > 0:
                             fm_event_change.append(
                                 {'index': i, 'value': float(statistics.mean(fml3zp)), 'upid': plate_data.upid, 'key': '0302', 'distance': 480.0,  'flag': 1,
-                                 'time': str(fml3pass_time)
+                                 'time': str(new_fmf3pass_time)
                                  })
                         else:
                             fm_event_change.append(
                                 {'index': i, 'value': float(statistics.mean(fml3zp)), 'upid': plate_data.upid, 'key': '0302', 'distance': 480.0, 'flag': 0,
-                                 'time': str(fml3pass_time)
+                                 'time': str(new_fmf3pass_time)
                                  })
                     temp_fm = statistics.mean(fml3zp)
                 else:
@@ -482,8 +493,8 @@ class eventChangeDataController:
                                  })
                         status_flag = data[i]
                     else:
-                        if i == 260:
-                            print('debug')
+                        # if i == 260:
+                        #     print('debug')
                         if data[i] > status_flag:
                             res_index.append(
                                 {'index': i, 'value': int(data[i]), 'flag': 1, 'upid': mareydata[i]['upid'], 'key': '0402',
@@ -530,7 +541,7 @@ class eventChangeDataController:
             for i in range(len(res_set)):
                 if i != len(res_set) - 1:
                     if data[res_set[i]] > data[res_set[i] - 1]:
-                        print(i)
+                        # print(i)
                         res_index.append({"index": res_set[i], "value": data[res_set[i]], 'flag': 1,
                                           'upid': mareydata[res_set[i]]['upid'], 'key': '0301', 'name': 'FmStart',
                                           'time': mareydata[i]['stops'][10]['time'],

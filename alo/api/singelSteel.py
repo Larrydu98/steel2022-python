@@ -179,6 +179,7 @@ def new_filterSQL(parser):
     SQL=SQL[:-5]
     if (SQL!=''):
         SQL="where " + SQL
+    print(SQL)
     return SQL, int(status_cooling), int(fqcflag)
 
 def filterSteelSpec(parser):
