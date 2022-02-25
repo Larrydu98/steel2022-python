@@ -1,0 +1,216 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="BranchesTreeState">
+    <expand>
+      <path>
+        <item name="ROOT" type="e8cecc67:BranchNodeDescriptor" />
+        <item name="LOCAL_ROOT" type="e8cecc67:BranchNodeDescriptor" />
+      </path>
+      <path>
+        <item name="ROOT" type="e8cecc67:BranchNodeDescriptor" />
+        <item name="REMOTE_ROOT" type="e8cecc67:BranchNodeDescriptor" />
+      </path>
+      <path>
+        <item name="ROOT" type="e8cecc67:BranchNodeDescriptor" />
+        <item name="REMOTE_ROOT" type="e8cecc67:BranchNodeDescriptor" />
+        <item name="GROUP_NODE:origin" type="e8cecc67:BranchNodeDescriptor" />
+      </path>
+    </expand>
+    <select />
+  </component>
+  <component name="ChangeListManager">
+    <list default="true" id="f74a7fdb-9590-4700-a78e-8f87df1f987a" name="Default Changelist" comment="">
+      <change beforePath="$PROJECT_DIR$/.dockerignore" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.pylintrc" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.vscode/settings.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Dockerfile" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/alo/api/BoardNumApi.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/alo/api/Platetypes.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/alo/api/Temperature2DAndFqcApi.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/alo/api/Visualization.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/alo/api/VisualizationCorrelation.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/alo/api/VisualizationCorrelation1.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/alo/api/VisualizationISOMAPApi.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/alo/api/VisualizationMaretoApi.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/alo/api/VisualizationPCAApi.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/alo/api/VisualizationPlatetypes.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/alo/api/VisualizationTsneApi.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/alo/api/VisualizationUMAPApi.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/alo/api/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/alo/api/__init__.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/alo/api/algorithmChooseApi.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/alo/api/baogangPlot/__init__.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/alo/api/dataPreApi.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/alo/api/detailProcessApi.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/alo/api/diagnosisDataApi.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/alo/api/diagnosisDataByTimeApi.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/alo/api/getFlag.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/alo/api/getMareyDataApi.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/alo/api/modelPredictCsvAllFlagApi.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/alo/api/modelTransferControllerApi.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/alo/api/modelTransferCsvApi.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/alo/api/monitorDataByTimeApi.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/alo/api/newVisualization.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/alo/api/newVisualizationByBatch.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/alo/api/plateYieldStaisticsApi.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/alo/api/sampleDivideApi.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/alo/api/strategyRunApi.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/alo/api/strategySaveApi.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/alo/api/test.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/alo/controller/BoardNumController.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/alo/controller/RollingPassStatisticsController.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/alo/controller/Temperature2DAndFqcController.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/alo/controller/VisualizationISOMAPController.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/alo/controller/VisualizationMaretoController.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/alo/controller/VisualizationPCAController.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/alo/controller/VisualizationTsneController.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/alo/controller/VisualizationUMAPController.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/alo/controller/algorithmChooseController.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/alo/controller/baogangPlot/__init__.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/alo/controller/baogangPlot/createDiagResu.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/alo/controller/baogangPlot/createDiagResuByTime.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/alo/controller/baogangPlot/createInProcess.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/alo/controller/baogangPlot/createMonitorResuByTime.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/alo/controller/dataFilterAfter.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/alo/controller/dataFilterController.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/alo/controller/dataPreController.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/alo/controller/dataTransform_Tomodel_Fromcsv.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/alo/controller/deepCNNSinTestController.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/alo/controller/deepCNNSinTestControllerNew.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/alo/controller/deepCNNTestController.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/alo/controller/deepModelPredictController.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/alo/controller/getDataDetial.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/alo/controller/getDataDiag.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/alo/controller/getPlateYieldStaisticsAndFlagController.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/alo/controller/modelPredictCsvAllFlagController.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/alo/controller/modelTransferController.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/alo/controller/modelTransferCsvController.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/alo/controller/newVisualizationByBatchController.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/alo/controller/sampleDivideController.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/alo/controller/strategyRunController.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/alo/controller/strategySaveController.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/alo/controller/temp2DAndFqcPicture/Fqc.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/alo/controller/temp2DAndFqcPicture/Temperature2D.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/hello.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/models.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/pylintrc" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/require_dev.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/require_run.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/index.html" beforeDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="JupyterTrust" id="889503f3-02eb-4a54-aa0f-b786a9aecd5e" />
+  <component name="ProjectId" id="25a7K7lNsGiXQ4CNNrCRzbfPJyM" />
+  <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
+  <component name="ProjectViewState">
+    <option name="foldersAlwaysOnTop" value="false" />
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showExcludedFiles" value="false" />
+    <option name="showLibraryContents" value="true" />
+    <option name="showMembers" value="true" />
+  </component>
+  <component name="PropertiesComponent">
+    <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
+    <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
+    <property name="WebServerToolWindowFactoryState" value="false" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/run.py" />
+  </component>
+  <component name="RunManager">
+    <configuration name="steel2022-python" type="PythonConfigurationType" factoryName="Python">
+      <module name="steel2022-python" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="D:\Anaconda\envs\PY36\python.exe" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
+      <option name="IS_MODULE_SDK" value="false" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/run.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
+  </component>
+  <component name="SvnConfiguration">
+    <configuration />
+  </component>
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="f74a7fdb-9590-4700-a78e-8f87df1f987a" name="Default Changelist" comment="" />
+      <created>1645753276878</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1645753276878</updated>
+      <workItem from="1645753280872" duration="295000" />
+      <workItem from="1645753669666" duration="1184000" />
+    </task>
+    <servers />
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="2" />
+  </component>
+  <component name="UnknownFeatures">
+    <option featureType="com.intellij.fileTypeFactory" implementationName="*.conf" />
+    <option featureType="com.intellij.fileTypeFactory" implementationName="requirements.txt" />
+  </component>
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State />
+          </value>
+        </entry>
+      </map>
+    </option>
+    <option name="oldMeFiltersMigrated" value="true" />
+  </component>
+  <component name="WindowStateProjectService">
+    <state x="414" y="180" key="#com.intellij.execution.impl.EditConfigurationsDialog" timestamp="1645753387609">
+      <screen x="0" y="0" width="1920" height="1050" />
+    </state>
+    <state x="414" y="180" key="#com.intellij.execution.impl.EditConfigurationsDialog/0.0.1920.1050/1920.0.1920.1050@0.0.1920.1050" timestamp="1645753387609" />
+    <state x="690" y="271" key="#com.intellij.refactoring.safeDelete.UnsafeUsagesDialog" timestamp="1645754845236">
+      <screen x="0" y="0" width="1920" height="1050" />
+    </state>
+    <state x="690" y="271" key="#com.intellij.refactoring.safeDelete.UnsafeUsagesDialog/0.0.1920.1050/1920.0.1920.1050@0.0.1920.1050" timestamp="1645754845236" />
+    <state x="740" y="280" key="FileChooserDialogImpl" timestamp="1645753331769">
+      <screen x="0" y="0" width="1920" height="1050" />
+    </state>
+    <state x="740" y="280" key="FileChooserDialogImpl/0.0.1920.1050/1920.0.1920.1050@0.0.1920.1050" timestamp="1645753331769" />
+    <state width="1877" height="285" key="GridCell.Tab.0.bottom" timestamp="1645754872430">
+      <screen x="0" y="0" width="1920" height="1050" />
+    </state>
+    <state width="1877" height="285" key="GridCell.Tab.0.bottom/0.0.1920.1050/1920.0.1920.1050@0.0.1920.1050" timestamp="1645754872430" />
+    <state width="1877" height="285" key="GridCell.Tab.0.center" timestamp="1645754872430">
+      <screen x="0" y="0" width="1920" height="1050" />
+    </state>
+    <state width="1877" height="285" key="GridCell.Tab.0.center/0.0.1920.1050/1920.0.1920.1050@0.0.1920.1050" timestamp="1645754872430" />
+    <state width="1877" height="285" key="GridCell.Tab.0.left" timestamp="1645754872430">
+      <screen x="0" y="0" width="1920" height="1050" />
+    </state>
+    <state width="1877" height="285" key="GridCell.Tab.0.left/0.0.1920.1050/1920.0.1920.1050@0.0.1920.1050" timestamp="1645754872430" />
+    <state width="1877" height="285" key="GridCell.Tab.0.right" timestamp="1645754872430">
+      <screen x="0" y="0" width="1920" height="1050" />
+    </state>
+    <state width="1877" height="285" key="GridCell.Tab.0.right/0.0.1920.1050/1920.0.1920.1050@0.0.1920.1050" timestamp="1645754872430" />
+  </component>
+  <component name="com.intellij.coverage.CoverageDataManagerImpl">
+    <SUITE FILE_PATH="coverage/steel2022_python$steel2022_python.coverage" NAME="steel2022-python Coverage Results" MODIFIED="1645754962293" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+  </component>
+</project>
