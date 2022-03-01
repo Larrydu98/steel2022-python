@@ -9,6 +9,7 @@ import pika, traceback
 
 parser = reqparse.RequestParser(trim=True, bundle_errors=True)
 
+
 # # 根目录
 # @app.route('/')
 
@@ -17,7 +18,8 @@ class newGetMareyStationsDataApi(Resource):
     '''
     AlgorithmChoose
     '''
-    def post(self, upid, start_time, end_time): #, steelspec, tgtplatethickness
+
+    def post(self, upid, start_time, end_time):  # , steelspec, tgtplatethickness
         parser.add_argument("steelspec", type=str, required=True)
         parser.add_argument("tgtplatethickness", type=str, required=True)
         # parser.add_argument("status_cooling", type=str, required=True)
@@ -26,12 +28,12 @@ class newGetMareyStationsDataApi(Resource):
         tgtplatethickness = json.loads(args["tgtplatethickness"])
 
         res = newComputeMareyData(type="stations",
-                               upid=upid,
-                               start_time=start_time,
-                               end_time=end_time,
-                               steelspec=steelspec,
-                               tgtplatethickness=tgtplatethickness
-                               )
+                                  upid=upid,
+                                  start_time=start_time,
+                                  end_time=end_time,
+                                  steelspec=steelspec,
+                                  tgtplatethickness=tgtplatethickness
+                                  )
         # res.printData()
         status, stations_result = res.newGetMareyStations()
         # print(stations_result)
@@ -43,6 +45,7 @@ class newGetMareyTimesDataApi(Resource):
     '''
     AlgorithmChoose
     '''
+
     def post(self, upid, start_time, end_time, compressed_factor):
         parser.add_argument("steelspec", type=str, required=True)
         parser.add_argument("tgtplatethickness", type=str, required=True)
@@ -52,12 +55,12 @@ class newGetMareyTimesDataApi(Resource):
         tgtplatethickness = json.loads(args["tgtplatethickness"])
 
         res = newComputeMareyData(type="times",
-                               upid=upid,
-                               start_time=start_time,
-                               end_time=end_time,
-                               steelspec=steelspec,
-                               tgtplatethickness=tgtplatethickness
-                               )
+                                  upid=upid,
+                                  start_time=start_time,
+                                  end_time=end_time,
+                                  steelspec=steelspec,
+                                  tgtplatethickness=tgtplatethickness
+                                  )
 
         status, stations_result = res.newGetMareyTimes(compressed_factor)
 
@@ -65,4 +68,5 @@ class newGetMareyTimesDataApi(Resource):
 
 
 api.add_resource(newGetMareyStationsDataApi, '/v1.0/newGetMareyStationsDataApi/<upid>/<start_time>/<end_time>/')
-api.add_resource(newGetMareyTimesDataApi, '/v1.0/newGetMareyTimesDataApi/<upid>/<start_time>/<end_time>/<compressed_factor>')
+api.add_resource(newGetMareyTimesDataApi,
+                 '/v1.0/newGetMareyTimesDataApi/<upid>/<start_time>/<end_time>/<compressed_factor>')
