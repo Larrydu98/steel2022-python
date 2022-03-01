@@ -19,85 +19,7 @@
     <select />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="f74a7fdb-9590-4700-a78e-8f87df1f987a" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/.dockerignore" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.pylintrc" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.vscode/settings.json" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Dockerfile" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/alo/api/BoardNumApi.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/alo/api/Platetypes.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/alo/api/Temperature2DAndFqcApi.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/alo/api/Visualization.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/alo/api/VisualizationCorrelation.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/alo/api/VisualizationCorrelation1.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/alo/api/VisualizationISOMAPApi.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/alo/api/VisualizationMaretoApi.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/alo/api/VisualizationPCAApi.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/alo/api/VisualizationPlatetypes.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/alo/api/VisualizationTsneApi.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/alo/api/VisualizationUMAPApi.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/alo/api/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/alo/api/__init__.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/alo/api/algorithmChooseApi.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/alo/api/baogangPlot/__init__.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/alo/api/dataPreApi.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/alo/api/detailProcessApi.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/alo/api/diagnosisDataApi.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/alo/api/diagnosisDataByTimeApi.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/alo/api/getFlag.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/alo/api/getMareyDataApi.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/alo/api/modelPredictCsvAllFlagApi.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/alo/api/modelTransferControllerApi.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/alo/api/modelTransferCsvApi.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/alo/api/monitorDataByTimeApi.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/alo/api/newVisualization.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/alo/api/newVisualizationByBatch.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/alo/api/plateYieldStaisticsApi.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/alo/api/sampleDivideApi.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/alo/api/strategyRunApi.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/alo/api/strategySaveApi.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/alo/api/test.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/alo/controller/BoardNumController.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/alo/controller/RollingPassStatisticsController.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/alo/controller/Temperature2DAndFqcController.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/alo/controller/VisualizationISOMAPController.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/alo/controller/VisualizationMaretoController.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/alo/controller/VisualizationPCAController.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/alo/controller/VisualizationTsneController.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/alo/controller/VisualizationUMAPController.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/alo/controller/algorithmChooseController.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/alo/controller/baogangPlot/__init__.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/alo/controller/baogangPlot/createDiagResu.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/alo/controller/baogangPlot/createDiagResuByTime.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/alo/controller/baogangPlot/createInProcess.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/alo/controller/baogangPlot/createMonitorResuByTime.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/alo/controller/dataFilterAfter.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/alo/controller/dataFilterController.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/alo/controller/dataPreController.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/alo/controller/dataTransform_Tomodel_Fromcsv.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/alo/controller/deepCNNSinTestController.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/alo/controller/deepCNNSinTestControllerNew.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/alo/controller/deepCNNTestController.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/alo/controller/deepModelPredictController.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/alo/controller/getDataDetial.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/alo/controller/getDataDiag.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/alo/controller/getPlateYieldStaisticsAndFlagController.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/alo/controller/modelPredictCsvAllFlagController.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/alo/controller/modelTransferController.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/alo/controller/modelTransferCsvController.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/alo/controller/newVisualizationByBatchController.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/alo/controller/sampleDivideController.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/alo/controller/strategyRunController.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/alo/controller/strategySaveController.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/alo/controller/temp2DAndFqcPicture/Fqc.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/alo/controller/temp2DAndFqcPicture/Temperature2D.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/hello.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/models.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/pylintrc" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/require_dev.txt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/require_run.txt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/index.html" beforeDir="false" />
-    </list>
+    <list default="true" id="f74a7fdb-9590-4700-a78e-8f87df1f987a" name="Default Changelist" comment="" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -158,6 +80,7 @@
       <updated>1645753276878</updated>
       <workItem from="1645753280872" duration="295000" />
       <workItem from="1645753669666" duration="1184000" />
+      <workItem from="1646104014706" duration="14000" />
     </task>
     <servers />
   </component>
