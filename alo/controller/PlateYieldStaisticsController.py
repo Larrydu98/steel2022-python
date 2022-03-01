@@ -29,7 +29,7 @@ class ComputePlateYieldStaisticsData:
         month_data = pd.DataFrame(month_data)
         good_flag, bad_flag, no_flag, endTimeOutput = self.run(self.time_diff, month_data)
         return {'endTimeOutput': endTimeOutput, 'good_flag': good_flag, 'bad_flag': bad_flag,
-                'no_flag': no_flag}, 200, {'Access-Control-Allow-Origin': '*'}
+                'no_flag': no_flag}
 
     def run(self, timeDiff, upid_CR_FQC):
         '''

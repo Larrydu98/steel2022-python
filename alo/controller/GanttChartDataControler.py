@@ -7,11 +7,13 @@ class getGanttChartData():
     def __init__(self, start_time, end_time):
         rows, col_names = getGanttChartDataDB.ganttChartDataDB(start_time, end_time)
         self.gantt_data = pd.DataFrame(data=rows, columns=col_names).dropna(axis=0, how='all').reset_index(drop=True)
-        print('================')
+        # print('================')
 
     def getGanttChartData(self):
+        # 批次划分的时间差
+        minute_diff = 30
         result = []
-        batch_plate = self.batchPlate(30)
+        batch_plate = self.batchPlate(minute_diff)
         category_plate = self.categoryPlate(batch_plate)
         for index, value in enumerate(category_plate):
             good_flag, bad_flag, no_flag = CountGoodBadNoflag(batch_plate[index])
@@ -28,28 +30,30 @@ class getGanttChartData():
                 "tgtthickness_avg": round(batch_plate[index].tgtthickness.mean(), 5),
                 'category': []
             })
-
+            # print('====================================')
             for i, val in enumerate(value):
-                good_flag, bad_flag, no_flag = CountGoodBadNoflag(val)
+                good_flag, bad_flag, no_flag = CountGoodBadNoflag(val['data'])
                 # platetype = val.iloc[0,:]['platetype']
                 result[index]['category'].append({
-                    'platetype': val.iloc[0,:]['platetype'],
+                    'merge_flag': val['merge_flag'],
+                    'platetype': val['data'].iloc[0, :]['platetype'],
                     'good_flag': good_flag,
                     'bad_flag': bad_flag,
                     'no_flag': no_flag,
-                    'total': len(val),
-                    'startTime': val.iloc[0].toc.strftime("%Y-%m-%d %H:%M:%S"),
-                    'endTime': val.iloc[len(val) - 1].toc.strftime("%Y-%m-%d %H:%M:%S"),
-                    "tgtwidth_avg": round(val.tgtwidth.mean(), 3),
-                    "tgtlength_avg": round(val.tgtlength.mean(), 3),
-                    "tgtthickness_avg": round(val.tgtthickness.mean(), 5),
-                    "tgtthickness_avg": round(val.tgtthickness.mean(), 5),
+                    'total': len(val['data']),
+                    'startTime': val['data'].iloc[0].toc.strftime("%Y-%m-%d %H:%M:%S"),
+                    'endTime': val['data'].iloc[len(val['data']) - 1].toc.strftime("%Y-%m-%d %H:%M:%S"),
+                    "tgtwidth_avg": round(val['data'].tgtwidth.mean(), 3),
+                    "tgtlength_avg": round(val['data'].tgtlength.mean(), 3),
+                    "tgtthickness_avg": round(val['data'].tgtthickness.mean(), 5),
+                    "tgtthickness_avg": round(val['data'].tgtthickness.mean(), 5),
                     'detail': []
 
                 })
+                # print(len(val['data']), val['merge_flag'])
                 # print(val['platetype'])
 
-                for df_index, df_row in val.iterrows():
+                for df_index, df_row in val['data'].iterrows():
                     result[index]['category'][i]['detail'].append({
                         'upid': df_row['upid'],
                         'platetype': df_row['platetype'],
@@ -59,7 +63,7 @@ class getGanttChartData():
                         'flag_lable': self.JudgePlateQuality(df_row)
                     })
 
-        #
+        # #
         return result
 
     # 批次类别
@@ -83,17 +87,42 @@ class getGanttChartData():
 
         return batch_plate
 
-    # 划分种类
+    # 划分种类并判断是否可以合并
     def categoryPlate(self, batch_plate):
-        category_plate = []
-        for index, value in enumerate(batch_plate):
-            category_value_plate = []
-            category_name = value['platetype'].unique()
-            for i, val in enumerate(category_name):
-                category_value_plate.append(value.loc[value['platetype'] == val])
-            category_plate.append(category_value_plate)
-        return category_plate
+        merge_limit = 6
+        # 判断合并冲突的最大极限
+        merrge_conflict = 4
+        res = []
+        for batch_index, batch_val in enumerate(batch_plate):
+            # 1是不能合并，0是可以合并
+            category_plate = []
+            might_merge_index = batch_val['platetype'].value_counts()[
+                batch_val['platetype'].value_counts() >= merge_limit].index.tolist()
+            cannot_merge_index = batch_val['platetype'].value_counts()[
+                batch_val['platetype'].value_counts() < merge_limit].index.tolist()
+            for index, value in enumerate(cannot_merge_index):
+                category_plate.append({'merge_flag': False, 'data': batch_val.loc[batch_val['platetype'] == value]})
+            for i, val in enumerate(might_merge_index):
+                might_merge_arr_index = batch_val.loc[batch_val['platetype'] == val].index
+                result = self.JudgeMerge(might_merge_arr_index)
+                for res_index, res_val in enumerate(result):
+                    # print(i, res_index)
+                    if len(res_val) >= merge_limit:
+                        category_plate.append({'merge_flag': True, 'data': batch_val.loc[res_val]})
+                    else:
+                        category_plate.append({'merge_flag': False, 'data': batch_val.loc[res_val]})
+                    category_plate.sort(key=lambda k: (k.get('data').iloc[0].toc))
+                    # sorted(category_plate, key=lambda x: x.iloc[0].toc)
+            res.append(category_plate)
+        # for index, value in enumerate(batch_plate):
+        #     category_value_plate = []
+        #     category_name = value['platetype'].unique()
+        #     for i, val in enumerate(category_name):
+        #         category_value_plate.append(value.loc[value['platetype'] == val])
+        #     category_plate.append(category_value_plate)
+        return res
 
+    # 判断单块钢板的好坏以及404
     def JudgePlateQuality(self, row):
         if (row['status_fqc'] == 0) & (row['flag_lable'] == '[1, 1, 1, 1, 1]'):
             return 0
@@ -101,3 +130,16 @@ class getGanttChartData():
             return 1
         else:
             return 404
+
+    def JudgeMerge(self, data):
+        interval_list = []
+        index_location = 0
+        for index, val in enumerate(data):
+            if index == 0:
+                continue
+            else:
+                if val - data[index - 1] > 3:
+                    interval_list.append(data[index_location: index])
+                    index_location = index
+        interval_list.append(data[index_location:])
+        return interval_list
