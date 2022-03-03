@@ -6,41 +6,30 @@
         <item name="ROOT" type="e8cecc67:BranchNodeDescriptor" />
         <item name="LOCAL_ROOT" type="e8cecc67:BranchNodeDescriptor" />
       </path>
-      <path>
-        <item name="ROOT" type="e8cecc67:BranchNodeDescriptor" />
-        <item name="REMOTE_ROOT" type="e8cecc67:BranchNodeDescriptor" />
-      </path>
-      <path>
-        <item name="ROOT" type="e8cecc67:BranchNodeDescriptor" />
-        <item name="REMOTE_ROOT" type="e8cecc67:BranchNodeDescriptor" />
-        <item name="GROUP_NODE:origin" type="e8cecc67:BranchNodeDescriptor" />
-      </path>
     </expand>
-    <select />
+    <select>
+      <path>
+        <item name="ROOT" type="e8cecc67:BranchNodeDescriptor" />
+        <item name="LOCAL_ROOT" type="e8cecc67:BranchNodeDescriptor" />
+        <item name="BRANCH:DBC" type="e8cecc67:BranchNodeDescriptor" />
+      </path>
+    </select>
   </component>
   <component name="ChangeListManager">
-<<<<<<< HEAD
-    <list default="true" id="f74a7fdb-9590-4700-a78e-8f87df1f987a" name="Default Changelist" comment="" />
-=======
-    <list default="true" id="f74a7fdb-9590-4700-a78e-8f87df1f987a" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/alo/api/GanttChartApi.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/alo/api/PlateYieldStaisticsApi.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/alo/controller/GanttChartDataControler.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/alo/controller/PlateYieldStaisticsController.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/alo/models/ganttChartDataDB.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/alo/models/plateYieldStaisticsDB.py" afterDir="false" />
+    <list default="true" id="680517ed-db17-45a9-ab5d-59336ab7549e" name="Default Changelist" comment="">
+      <change afterPath="$PROJECT_DIR$/alo/api/DiagnosisDataByUpid.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/alo/controller/diagnosisDataController.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/alo/models/getDiagnosisDataDB.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/inspectionProfiles/Project_Default.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/modules.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/modules.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/steel2022-python.iml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/vcs.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/alo/api/GanttChartApi.py" beforeDir="false" afterPath="$PROJECT_DIR$/alo/api/GanttChartApi.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/alo/api/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/alo/api/__init__.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/alo/api/getEventDataApi.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/alo/api/newGetMareyDataApi.py" beforeDir="false" afterPath="$PROJECT_DIR$/alo/api/newGetMareyDataApi.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/alo/controller/dataFilterCsvAfter.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/alo/controller/getDataController.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/alo/controller/getMareyDataController.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/alo/controller/iconChangeController.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/alo/models/getEventDataDB.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/alo/controller/GanttChartDataControler.py" beforeDir="false" afterPath="$PROJECT_DIR$/alo/controller/GanttChartDataControler.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/alo/utils.py" beforeDir="false" afterPath="$PROJECT_DIR$/alo/utils.py" afterDir="false" />
     </list>
->>>>>>> master
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -57,38 +46,43 @@
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
   <component name="JupyterTrust" id="889503f3-02eb-4a54-aa0f-b786a9aecd5e" />
-  <component name="ProjectId" id="25a7K7lNsGiXQ4CNNrCRzbfPJyM" />
+  <component name="ProjectId" id="1sekD2R9h6PV27kWQ88hSGVRJLn" />
   <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
   <component name="ProjectViewState">
-    <option name="foldersAlwaysOnTop" value="false" />
     <option name="hideEmptyMiddlePackages" value="true" />
-    <option name="showExcludedFiles" value="false" />
     <option name="showLibraryContents" value="true" />
-    <option name="showMembers" value="true" />
   </component>
   <component name="PropertiesComponent">
     <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
     <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
     <property name="WebServerToolWindowFactoryState" value="false" />
     <property name="last_opened_file_path" value="$PROJECT_DIR$" />
+    <property name="settings.editor.selected.configurable" value="com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable" />
   </component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
-      <recent name="C:\Users\duke\Desktop\steel2022-python\alo\controller" />
-      <recent name="C:\Users\duke\Desktop\steel2022-python\alo\models" />
+      <recent name="E:\BaoSteelProject\new_steel2020\python-backend-V2.1\alo\controller" />
+      <recent name="E:\BaoSteelProject\new_steel2020\python-backend-V2.1\alo\api" />
+      <recent name="E:\BaoSteelProject\new_steel2020\python-backend-V2.1\alo\controller\baogangPlot" />
+      <recent name="E:\BaoSteelProject\new_steel2020\python-backend-V2.1\alo\api\baogangPlot" />
+    </key>
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="C:\Users\duke\Desktop\python-backend-V2.1\alo\DBCMoudles" />
+      <recent name="C:\Users\duke\Desktop\python-backend-V2.1\alo\controller" />
+      <recent name="C:\Users\duke\Desktop\python-backend-V2.1\alo\models\BaoSteel" />
     </key>
   </component>
   <component name="RunManager">
-    <configuration name="steel2022-python" type="PythonConfigurationType" factoryName="Python">
-      <module name="steel2022-python" />
+    <configuration name="run" type="PythonConfigurationType" factoryName="Python" nameIsGenerated="true">
+      <module name="python-backend" />
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
       <envs>
         <env name="PYTHONUNBUFFERED" value="1" />
       </envs>
-      <option name="SDK_HOME" value="D:\Anaconda\envs\PY36\python.exe" />
+      <option name="SDK_HOME" value="" />
       <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
-      <option name="IS_MODULE_SDK" value="false" />
+      <option name="IS_MODULE_SDK" value="true" />
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
       <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
@@ -107,37 +101,144 @@
   </component>
   <component name="TaskManager">
     <task active="true" id="Default" summary="Default task">
-      <changelist id="f74a7fdb-9590-4700-a78e-8f87df1f987a" name="Default Changelist" comment="" />
-      <created>1645753276878</created>
+      <changelist id="680517ed-db17-45a9-ab5d-59336ab7549e" name="Default Changelist" comment="" />
+      <created>1621240319729</created>
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
-      <updated>1645753276878</updated>
-      <workItem from="1645753280872" duration="295000" />
-<<<<<<< HEAD
-      <workItem from="1645753669666" duration="1184000" />
-      <workItem from="1646104014706" duration="14000" />
-=======
-      <workItem from="1645753669666" duration="15214000" />
-      <workItem from="1646013768355" duration="2161000" />
-      <workItem from="1646016060960" duration="18163000" />
-      <workItem from="1646096165869" duration="7384000" />
->>>>>>> master
+      <updated>1621240319729</updated>
+      <workItem from="1621240326861" duration="4996000" />
+      <workItem from="1621245454788" duration="15069000" />
+      <workItem from="1621330948910" duration="13992000" />
+      <workItem from="1622558819959" duration="456000" />
+      <workItem from="1622595543616" duration="4548000" />
+      <workItem from="1622609450187" duration="3744000" />
+      <workItem from="1622716085271" duration="7254000" />
+      <workItem from="1622767171831" duration="10368000" />
+      <workItem from="1622879333278" duration="13780000" />
+      <workItem from="1622946377691" duration="677000" />
+      <workItem from="1622968819998" duration="11200000" />
+      <workItem from="1622986348052" duration="651000" />
+      <workItem from="1622987996100" duration="4485000" />
+      <workItem from="1623027296495" duration="21757000" />
+      <workItem from="1623065550212" duration="6443000" />
+      <workItem from="1623113305757" duration="5255000" />
+      <workItem from="1623198810750" duration="1018000" />
+      <workItem from="1623286770973" duration="1198000" />
+      <workItem from="1623372366627" duration="2143000" />
+      <workItem from="1623469975456" duration="1201000" />
+      <workItem from="1623556167903" duration="1786000" />
+      <workItem from="1623635881435" duration="873000" />
+      <workItem from="1623897261998" duration="637000" />
+      <workItem from="1623907462537" duration="209000" />
+      <workItem from="1623907903513" duration="19000" />
+      <workItem from="1625298073278" duration="1673000" />
+      <workItem from="1625404134977" duration="9425000" />
+      <workItem from="1625988238837" duration="230000" />
+      <workItem from="1625988560914" duration="8239000" />
+      <workItem from="1626050688455" duration="25653000" />
+      <workItem from="1626140654326" duration="4753000" />
+      <workItem from="1626146514357" duration="4018000" />
+      <workItem from="1626244479357" duration="2574000" />
+      <workItem from="1626680531271" duration="118000" />
+      <workItem from="1626681263821" duration="14327000" />
+      <workItem from="1626703717451" duration="2341000" />
+      <workItem from="1627452014964" duration="5320000" />
+      <workItem from="1627524520616" duration="1564000" />
+      <workItem from="1627868774233" duration="1915000" />
+      <workItem from="1628476118321" duration="11063000" />
+      <workItem from="1628841646870" duration="6519000" />
+      <workItem from="1628906796385" duration="1878000" />
+      <workItem from="1628993724690" duration="131000" />
+      <workItem from="1629095769067" duration="2455000" />
+      <workItem from="1631366550903" duration="1742000" />
+      <workItem from="1631670558559" duration="330000" />
+      <workItem from="1632232248015" duration="738000" />
+      <workItem from="1634284004399" duration="3871000" />
+      <workItem from="1634541310677" duration="16351000" />
+      <workItem from="1634608057810" duration="20520000" />
+      <workItem from="1634694487965" duration="17334000" />
+      <workItem from="1634785015135" duration="14375000" />
+      <workItem from="1634863320294" duration="2270000" />
+      <workItem from="1634896471042" duration="1279000" />
+      <workItem from="1634962596565" duration="5425000" />
+      <workItem from="1635040322252" duration="8185000" />
+      <workItem from="1635051557616" duration="5545000" />
+      <workItem from="1635125672851" duration="5555000" />
+      <workItem from="1635165075576" duration="2342000" />
+      <workItem from="1635211246293" duration="1719000" />
+      <workItem from="1635295544591" duration="2629000" />
+      <workItem from="1635395983746" duration="588000" />
+      <workItem from="1635470382228" duration="4190000" />
+      <workItem from="1635837792046" duration="2180000" />
+      <workItem from="1635845882514" duration="8021000" />
+      <workItem from="1635865936123" duration="893000" />
+      <workItem from="1635926557640" duration="482000" />
+      <workItem from="1636033970609" duration="718000" />
+      <workItem from="1636073830603" duration="8630000" />
+      <workItem from="1636100073599" duration="1375000" />
+      <workItem from="1636379853799" duration="716000" />
+      <workItem from="1636526657117" duration="1188000" />
+      <workItem from="1637572552601" duration="5266000" />
+      <workItem from="1639128121500" duration="705000" />
+      <workItem from="1639552479076" duration="17845000" />
+      <workItem from="1639622135840" duration="8189000" />
+      <workItem from="1639706754171" duration="12466000" />
+      <workItem from="1639743159418" duration="1117000" />
+      <workItem from="1639898549454" duration="6364000" />
+      <workItem from="1639966618973" duration="6609000" />
+      <workItem from="1640052227003" duration="5354000" />
+      <workItem from="1640171903840" duration="11717000" />
+      <workItem from="1640224788545" duration="13359000" />
+      <workItem from="1640335048577" duration="9344000" />
+      <workItem from="1640564606720" duration="17397000" />
+      <workItem from="1640656150683" duration="21907000" />
+      <workItem from="1640699168234" duration="220000" />
+      <workItem from="1640741653009" duration="13067000" />
+      <workItem from="1640829201563" duration="8164000" />
+      <workItem from="1640912009014" duration="2724000" />
+      <workItem from="1641257727580" duration="10377000" />
+      <workItem from="1641343221302" duration="11177000" />
+      <workItem from="1641431749883" duration="5753000" />
+      <workItem from="1641517161746" duration="3584000" />
+      <workItem from="1641554329630" duration="3153000" />
+      <workItem from="1641778556300" duration="2475000" />
+      <workItem from="1641866959297" duration="80000" />
+      <workItem from="1641867550291" duration="861000" />
+      <workItem from="1641868429899" duration="3456000" />
+      <workItem from="1641872691775" duration="106000" />
+      <workItem from="1646013326622" duration="2035000" />
+      <workItem from="1646016017224" duration="42000" />
+      <workItem from="1646208267965" duration="15014000" />
+      <workItem from="1646274481584" duration="20330000" />
     </task>
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
     <option name="version" value="2" />
   </component>
-  <component name="UnknownFeatures">
-    <option featureType="com.intellij.fileTypeFactory" implementationName="*.conf" />
-    <option featureType="com.intellij.fileTypeFactory" implementationName="requirements.txt" />
-  </component>
   <component name="Vcs.Log.Tabs.Properties">
     <option name="TAB_STATES">
       <map>
         <entry key="MAIN">
           <value>
-            <State />
+            <State>
+              <option name="CUSTOM_BOOLEAN_PROPERTIES">
+                <map>
+                  <entry key="Show.Git.Branches" value="false" />
+                </map>
+              </option>
+              <option name="FILTERS">
+                <map>
+                  <entry key="branch">
+                    <value>
+                      <list>
+                        <option value="DBC" />
+                      </list>
+                    </value>
+                  </entry>
+                </map>
+              </option>
+            </State>
           </value>
         </entry>
       </map>
@@ -145,90 +246,115 @@
     <option name="oldMeFiltersMigrated" value="true" />
   </component>
   <component name="WindowStateProjectService">
-    <state x="414" y="180" key="#com.intellij.execution.impl.EditConfigurationsDialog" timestamp="1645753387609">
+    <state x="586" y="203" key="#Inspections" timestamp="1646299742625">
       <screen x="0" y="0" width="1920" height="1050" />
     </state>
-    <state x="414" y="180" key="#com.intellij.execution.impl.EditConfigurationsDialog/0.0.1920.1050/1920.0.1920.1050@0.0.1920.1050" timestamp="1645753387609" />
-    <state x="650" y="325" key="#com.intellij.fileTypes.FileTypeChooser" timestamp="1646016212456">
+    <state x="586" y="203" key="#Inspections/0.0.1920.1050/1920.0.1920.1050@0.0.1920.1050" timestamp="1646299742624" />
+    <state x="414" y="180" key="#com.intellij.execution.impl.EditConfigurationsDialog" timestamp="1646208307107">
       <screen x="0" y="0" width="1920" height="1050" />
     </state>
-    <state x="650" y="325" key="#com.intellij.fileTypes.FileTypeChooser/0.0.1920.1050/1920.0.1920.1050@0.0.1920.1050" timestamp="1646016212456" />
-    <state x="2570" y="325" key="#com.intellij.fileTypes.FileTypeChooser/0.0.1920.1050/1920.0.1920.1050@1920.0.1920.1050" timestamp="1646015673168" />
-    <state x="2610" y="271" key="#com.intellij.refactoring.safeDelete.UnsafeUsagesDialog" timestamp="1646015516761">
+    <state x="414" y="180" key="#com.intellij.execution.impl.EditConfigurationsDialog/0.0.1920.1050/1920.0.1920.1050@0.0.1920.1050" timestamp="1646208307107" />
+    <state x="2334" y="180" key="#com.intellij.execution.impl.EditConfigurationsDialog/0.0.1920.1050/1920.0.1920.1050@1920.0.1920.1050" timestamp="1641300363118" />
+    <state x="713" y="325" key="#com.intellij.fileTypes.FileTypeChooser" timestamp="1639552850533">
+      <screen x="0" y="0" width="1920" height="1050" />
+    </state>
+    <state x="713" y="325" key="#com.intellij.fileTypes.FileTypeChooser/0.0.1920.1050/1920.0.1920.1050@0.0.1920.1050" timestamp="1639552850533" />
+    <state width="1692" height="471" key="DebuggerActiveHint" timestamp="1641345491649">
+      <screen x="0" y="0" width="1920" height="1050" />
+    </state>
+    <state width="1692" height="471" key="DebuggerActiveHint/0.0.1920.1050/1920.0.1920.1050@0.0.1920.1050" timestamp="1641345491649" />
+    <state x="92" y="92" width="1736" height="615" maximized="true" key="DiffContextDialog" timestamp="1641347510238">
+      <screen x="0" y="0" width="1920" height="1050" />
+    </state>
+    <state x="92" y="92" width="1736" height="615" maximized="true" key="DiffContextDialog/0.0.1920.1050/1920.0.1920.1050@0.0.1920.1050" timestamp="1641347510238" />
+    <state x="734" y="221" width="424" height="484" key="FileChooserDialogImpl" timestamp="1646212919029">
+      <screen x="0" y="0" width="1920" height="1050" />
+    </state>
+    <state x="734" y="221" key="FileChooserDialogImpl/0.0.1920.1050/1920.0.1920.1050@0.0.1920.1050" timestamp="1646212919029" />
+    <state x="2654" y="221" key="FileChooserDialogImpl/0.0.1920.1050/1920.0.1920.1050@1920.0.1920.1050" timestamp="1641872643713" />
+    <state width="1877" height="327" key="GridCell.Tab.0.bottom" timestamp="1646314697006">
+      <screen x="0" y="0" width="1920" height="1050" />
+    </state>
+    <state width="1877" height="327" key="GridCell.Tab.0.bottom/0.0.1920.1050/1920.0.1920.1050@0.0.1920.1050" timestamp="1646314697006" />
+    <state width="1877" height="444" key="GridCell.Tab.0.bottom/0.0.1920.1050/1920.0.1920.1050@1920.0.1920.1050" timestamp="1641872644613" />
+    <state width="1877" height="327" key="GridCell.Tab.0.center" timestamp="1646314697006">
+      <screen x="0" y="0" width="1920" height="1050" />
+    </state>
+    <state width="1877" height="327" key="GridCell.Tab.0.center/0.0.1920.1050/1920.0.1920.1050@0.0.1920.1050" timestamp="1646314697006" />
+    <state width="1877" height="444" key="GridCell.Tab.0.center/0.0.1920.1050/1920.0.1920.1050@1920.0.1920.1050" timestamp="1641872644613" />
+    <state width="1877" height="327" key="GridCell.Tab.0.left" timestamp="1646314697006">
+      <screen x="0" y="0" width="1920" height="1050" />
+    </state>
+    <state width="1877" height="327" key="GridCell.Tab.0.left/0.0.1920.1050/1920.0.1920.1050@0.0.1920.1050" timestamp="1646314697006" />
+    <state width="1877" height="444" key="GridCell.Tab.0.left/0.0.1920.1050/1920.0.1920.1050@1920.0.1920.1050" timestamp="1641872644613" />
+    <state width="1877" height="327" key="GridCell.Tab.0.right" timestamp="1646314697006">
+      <screen x="0" y="0" width="1920" height="1050" />
+    </state>
+    <state width="1877" height="327" key="GridCell.Tab.0.right/0.0.1920.1050/1920.0.1920.1050@0.0.1920.1050" timestamp="1646314697006" />
+    <state width="1877" height="444" key="GridCell.Tab.0.right/0.0.1920.1050/1920.0.1920.1050@1920.0.1920.1050" timestamp="1641872644613" />
+    <state width="1877" height="302" key="GridCell.Tab.1.bottom" timestamp="1646314697003">
+      <screen x="0" y="0" width="1920" height="1050" />
+    </state>
+    <state width="1877" height="302" key="GridCell.Tab.1.bottom/0.0.1920.1050/1920.0.1920.1050@0.0.1920.1050" timestamp="1646314697003" />
+    <state width="1877" height="444" key="GridCell.Tab.1.bottom/0.0.1920.1050/1920.0.1920.1050@1920.0.1920.1050" timestamp="1641872644613" />
+    <state width="1877" height="302" key="GridCell.Tab.1.center" timestamp="1646314697003">
+      <screen x="0" y="0" width="1920" height="1050" />
+    </state>
+    <state width="1877" height="302" key="GridCell.Tab.1.center/0.0.1920.1050/1920.0.1920.1050@0.0.1920.1050" timestamp="1646314697003" />
+    <state width="1877" height="444" key="GridCell.Tab.1.center/0.0.1920.1050/1920.0.1920.1050@1920.0.1920.1050" timestamp="1641872644613" />
+    <state width="1877" height="302" key="GridCell.Tab.1.left" timestamp="1646314697003">
+      <screen x="0" y="0" width="1920" height="1050" />
+    </state>
+    <state width="1877" height="302" key="GridCell.Tab.1.left/0.0.1920.1050/1920.0.1920.1050@0.0.1920.1050" timestamp="1646314697003" />
+    <state width="1877" height="444" key="GridCell.Tab.1.left/0.0.1920.1050/1920.0.1920.1050@1920.0.1920.1050" timestamp="1641872644613" />
+    <state width="1877" height="302" key="GridCell.Tab.1.right" timestamp="1646314697003">
+      <screen x="0" y="0" width="1920" height="1050" />
+    </state>
+    <state width="1877" height="302" key="GridCell.Tab.1.right/0.0.1920.1050/1920.0.1920.1050@0.0.1920.1050" timestamp="1646314697003" />
+    <state width="1877" height="444" key="GridCell.Tab.1.right/0.0.1920.1050/1920.0.1920.1050@1920.0.1920.1050" timestamp="1641872644613" />
+    <state x="2381" y="169" key="SettingsEditor" timestamp="1639552515404">
       <screen x="1920" y="0" width="1920" height="1050" />
     </state>
-    <state x="690" y="271" key="#com.intellij.refactoring.safeDelete.UnsafeUsagesDialog/0.0.1920.1050/1920.0.1920.1050@0.0.1920.1050" timestamp="1645754929620" />
-    <state x="2610" y="271" key="#com.intellij.refactoring.safeDelete.UnsafeUsagesDialog/0.0.1920.1050/1920.0.1920.1050@1920.0.1920.1050" timestamp="1646015516761" />
-    <state width="1460" height="466" key="DebuggerActiveHint" timestamp="1646053179173">
+    <state x="2381" y="169" key="SettingsEditor/0.0.1920.1050/1920.0.1920.1050@1920.0.1920.1050" timestamp="1639552515404" />
+    <state width="804" height="535" key="XDebugger.FullValuePopup" timestamp="1646302710111">
       <screen x="0" y="0" width="1920" height="1050" />
     </state>
-    <state width="1460" height="466" key="DebuggerActiveHint/0.0.1920.1050/1920.0.1920.1050@0.0.1920.1050" timestamp="1646053179173" />
-    <state x="2660" y="280" key="FileChooserDialogImpl" timestamp="1645775199338">
-      <screen x="1920" y="0" width="1920" height="1050" />
-    </state>
-    <state x="740" y="280" key="FileChooserDialogImpl/0.0.1920.1050/1920.0.1920.1050@0.0.1920.1050" timestamp="1645753331769" />
-    <state x="2660" y="280" key="FileChooserDialogImpl/0.0.1920.1050/1920.0.1920.1050@1920.0.1920.1050" timestamp="1645775199338" />
-    <state width="1877" height="352" key="GridCell.Tab.0.bottom" timestamp="1646103328675">
+    <state width="804" height="535" key="XDebugger.FullValuePopup/0.0.1920.1050/1920.0.1920.1050@0.0.1920.1050" timestamp="1646302710111" />
+    <state x="565" y="135" key="com.intellij.openapi.editor.actions.MultiplePasteAction$ClipboardContentChooser" timestamp="1639728914636">
       <screen x="0" y="0" width="1920" height="1050" />
     </state>
-    <state width="1877" height="352" key="GridCell.Tab.0.bottom/0.0.1920.1050/1920.0.1920.1050@0.0.1920.1050" timestamp="1646103328675" />
-    <state width="1877" height="352" key="GridCell.Tab.0.bottom/0.0.1920.1050/1920.0.1920.1050@1920.0.1920.1050" timestamp="1645774818395" />
-    <state width="1877" height="352" key="GridCell.Tab.0.center" timestamp="1646103328675">
+    <state x="565" y="135" key="com.intellij.openapi.editor.actions.MultiplePasteAction$ClipboardContentChooser/0.0.1920.1050/1920.0.1920.1050@0.0.1920.1050" timestamp="1639728914636" />
+    <state x="661" y="126" width="596" height="798" key="find.popup" timestamp="1641458216613">
       <screen x="0" y="0" width="1920" height="1050" />
     </state>
-    <state width="1877" height="352" key="GridCell.Tab.0.center/0.0.1920.1050/1920.0.1920.1050@0.0.1920.1050" timestamp="1646103328675" />
-    <state width="1877" height="352" key="GridCell.Tab.0.center/0.0.1920.1050/1920.0.1920.1050@1920.0.1920.1050" timestamp="1645774818395" />
-    <state width="1877" height="352" key="GridCell.Tab.0.left" timestamp="1646103328675">
+    <state x="661" y="126" width="596" height="798" key="find.popup/0.0.1920.1050/1920.0.1920.1050@0.0.1920.1050" timestamp="1641458216613" />
+    <state x="623" y="227" width="672" height="685" key="search.everywhere.popup" timestamp="1646314114581">
       <screen x="0" y="0" width="1920" height="1050" />
     </state>
-    <state width="1877" height="352" key="GridCell.Tab.0.left/0.0.1920.1050/1920.0.1920.1050@0.0.1920.1050" timestamp="1646103328675" />
-    <state width="1877" height="352" key="GridCell.Tab.0.left/0.0.1920.1050/1920.0.1920.1050@1920.0.1920.1050" timestamp="1645774818395" />
-    <state width="1877" height="352" key="GridCell.Tab.0.right" timestamp="1646103328675">
-      <screen x="0" y="0" width="1920" height="1050" />
-    </state>
-    <state width="1877" height="352" key="GridCell.Tab.0.right/0.0.1920.1050/1920.0.1920.1050@0.0.1920.1050" timestamp="1646103328675" />
-    <state width="1877" height="352" key="GridCell.Tab.0.right/0.0.1920.1050/1920.0.1920.1050@1920.0.1920.1050" timestamp="1645774818395" />
-    <state width="1877" height="352" key="GridCell.Tab.1.bottom" timestamp="1646103328675">
-      <screen x="0" y="0" width="1920" height="1050" />
-    </state>
-    <state width="1877" height="352" key="GridCell.Tab.1.bottom/0.0.1920.1050/1920.0.1920.1050@0.0.1920.1050" timestamp="1646103328675" />
-    <state width="1877" height="352" key="GridCell.Tab.1.bottom/0.0.1920.1050/1920.0.1920.1050@1920.0.1920.1050" timestamp="1645774818395" />
-    <state width="1877" height="352" key="GridCell.Tab.1.center" timestamp="1646103328675">
-      <screen x="0" y="0" width="1920" height="1050" />
-    </state>
-    <state width="1877" height="352" key="GridCell.Tab.1.center/0.0.1920.1050/1920.0.1920.1050@0.0.1920.1050" timestamp="1646103328675" />
-    <state width="1877" height="352" key="GridCell.Tab.1.center/0.0.1920.1050/1920.0.1920.1050@1920.0.1920.1050" timestamp="1645774818395" />
-    <state width="1877" height="352" key="GridCell.Tab.1.left" timestamp="1646103328675">
-      <screen x="0" y="0" width="1920" height="1050" />
-    </state>
-    <state width="1877" height="352" key="GridCell.Tab.1.left/0.0.1920.1050/1920.0.1920.1050@0.0.1920.1050" timestamp="1646103328675" />
-    <state width="1877" height="352" key="GridCell.Tab.1.left/0.0.1920.1050/1920.0.1920.1050@1920.0.1920.1050" timestamp="1645774818395" />
-    <state width="1877" height="352" key="GridCell.Tab.1.right" timestamp="1646103328675">
-      <screen x="0" y="0" width="1920" height="1050" />
-    </state>
-    <state width="1877" height="352" key="GridCell.Tab.1.right/0.0.1920.1050/1920.0.1920.1050@0.0.1920.1050" timestamp="1646103328675" />
-    <state width="1877" height="352" key="GridCell.Tab.1.right/0.0.1920.1050/1920.0.1920.1050@1920.0.1920.1050" timestamp="1645774818395" />
-    <state width="968" height="533" key="XDebugger.FullValuePopup" timestamp="1646102779063">
-      <screen x="0" y="0" width="1920" height="1050" />
-    </state>
-    <state width="968" height="533" key="XDebugger.FullValuePopup/0.0.1920.1050/1920.0.1920.1050@0.0.1920.1050" timestamp="1646102779063" />
-    <state x="800" y="296" key="refactoring.ChangeSignatureDialog" timestamp="1646052526413">
-      <screen x="0" y="0" width="1920" height="1050" />
-    </state>
-    <state x="800" y="296" key="refactoring.ChangeSignatureDialog/0.0.1920.1050/1920.0.1920.1050@0.0.1920.1050" timestamp="1646052526413" />
-    <state x="623" y="227" width="672" height="678" key="search.everywhere.popup" timestamp="1646103523068">
-      <screen x="0" y="0" width="1920" height="1050" />
-    </state>
-    <state x="623" y="227" width="672" height="678" key="search.everywhere.popup/0.0.1920.1050/1920.0.1920.1050@0.0.1920.1050" timestamp="1646103523068" />
-    <state x="2543" y="227" width="672" height="678" key="search.everywhere.popup/0.0.1920.1050/1920.0.1920.1050@1920.0.1920.1050" timestamp="1646015961173" />
+    <state x="623" y="227" width="672" height="685" key="search.everywhere.popup/0.0.1920.1050/1920.0.1920.1050@0.0.1920.1050" timestamp="1646314114581" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
       <breakpoints>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/alo/utils.py</url>
-          <line>31</line>
-          <option name="timeStamp" value="27" />
+          <url>file://$PROJECT_DIR$/alo/controller/getMareyDataController.py</url>
+          <line>74</line>
+          <option name="timeStamp" value="2" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/alo/controller/ThicknessController.py</url>
+          <line>49</line>
+          <option name="timeStamp" value="3" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/alo/controller/newGetMareyDataController.py</url>
+          <line>87</line>
+          <option name="timeStamp" value="4" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/alo/DBCMoudles/getThicknessDataDB.py</url>
+          <line>54</line>
+          <option name="timeStamp" value="5" />
         </line-breakpoint>
       </breakpoints>
       <default-breakpoints>
@@ -241,18 +367,17 @@
     </breakpoint-manager>
     <watches-manager>
       <configuration name="PythonConfigurationType">
-        <watch expression="result" />
-        <watch expression="i" />
-        <watch expression="index" />
-        <watch expression="df_row" language="Python" />
-        <watch expression="value" language="Python" />
-        <watch expression="val" language="Python" />
-        <watch expression="val.loc[0,:]['platetype']" language="Python" />
-        <watch expression="test" language="Python" />
+        <watch expression="num_pc" language="Python" />
       </configuration>
     </watches-manager>
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
-    <SUITE FILE_PATH="coverage/steel2022_python$steel2022_python.coverage" NAME="steel2022-python Coverage Results" MODIFIED="1646103266337" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/python_backend$getMareyDataController.coverage" NAME="getMareyDataController Coverage Results" MODIFIED="1621333800891" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/alo/controller" />
+    <SUITE FILE_PATH="coverage/python_backend$getMareyData.coverage" NAME="getMareyData Coverage Results" MODIFIED="1621330393944" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/alo/models" />
+    <SUITE FILE_PATH="coverage/python_backend$getMareyDataFromDB.coverage" NAME="getMareyDataFromDB Coverage Results" MODIFIED="1621334841721" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/alo/models" />
+    <SUITE FILE_PATH="coverage/python_backend$getMareyDataFromDB__1_.coverage" NAME="getMareyDataFromDB (1) Coverage Results" MODIFIED="1621334995114" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/alo/models" />
+    <SUITE FILE_PATH="coverage/steel2022_python$run.coverage" NAME="run Coverage Results" MODIFIED="1646313916545" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/python_backend_V2_1$run.coverage" NAME="run Coverage Results" MODIFIED="1646013622207" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/python_backend$run.coverage" NAME="run Coverage Results" MODIFIED="1623636115290" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
   </component>
 </project>

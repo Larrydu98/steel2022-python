@@ -42,4 +42,5 @@ from . import newGetMareyDataApi
 
 from . import  GanttChartApi
 from . import PlateYieldStaisticsApi
+from . import  DiagnosisDataByUpid
 # from . import modelPredictCsvAllFlagApi

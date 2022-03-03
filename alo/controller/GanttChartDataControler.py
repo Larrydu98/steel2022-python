@@ -56,6 +56,7 @@ class getGanttChartData():
                 for df_index, df_row in val['data'].iterrows():
                     result[index]['category'][i]['detail'].append({
                         'upid': df_row['upid'],
+                        'toc': df_row['toc'].strftime("%Y-%m-%d %H:%M:%S"),
                         'platetype': df_row['platetype'],
                         'tgtwidth': df_row['tgtwidth'],
                         'tgtlength': df_row['tgtlength'],
