@@ -10,10 +10,9 @@ from ..models.getDiagnosisDataDB import GetDiagnosisData
 
 
 class diagnosisDataComputer():
-    def __init__(self, parser, sort_type, plate_limit):
-        self.sort_type = sort_type
+    def __init__(self, args, plate_limit):
         # 获取数据
-        get_data_class = GetDiagnosisData(parser, sort_type, plate_limit)
+        get_data_class = GetDiagnosisData(args, plate_limit)
         self.train_rows, self.train_col_names, self.status_cooling, self.fqcflag = get_data_class.getDaignosisTrainData()
         self.train_df = pd.DataFrame(data=self.train_rows, columns=self.train_col_names)
         self.train_df['plate_quantity'] = diagnosisFlag(self.train_df, 'DataFrame')
@@ -22,8 +21,8 @@ class diagnosisDataComputer():
         self.single_dimensional_variable = copy.deepcopy(single_dimensional_variable) if self.status_cooling == 0 else copy.deepcopy(without_cooling_single_dimensional_variable)
 
     def getdiagnosisData(self):
-        if len(self.train_rows) == 0 or self.test_rows == 0:
-            return {}, 204
+        if len(self.train_rows) == 0 or len(self.test_rows) == 0:
+            return [], 204
         try:
             _data_names = []
             if self.status_cooling == 0:
@@ -38,7 +37,7 @@ class diagnosisDataComputer():
             return diag_result, status_code,
         except Exception:
             print(traceback.format_exc())
-            return {}, 500
+            return [], 500
 
     # 主程序入口
 
@@ -89,7 +88,6 @@ class diagnosisDataComputer():
         test_data_df['plate_quantity'] = diagnosisFlag(test_data_df, 'DataFrame')
         train_len = len(good_board_df)
         diag_result = []
-        # data = test_data_df.values.tolist()
         for index,val in test_data_df.iterrows():
             one_process = []
             for data_name in self.single_dimensional_variable:
@@ -127,72 +125,6 @@ class diagnosisDataComputer():
                 "CONTQ": contq_Pro
             })
 
-        # for i in range(len(data)):
-        #     fqc_label = 1 if np.array(data[i][6]['method1']['data']).sum() == 5 else 0
-        #     toc = data[i][7]
-        #
-        #     one_process = []
-        #     for data_name in self.single_dimensional_variable:
-        #         one_process.append(data[i][5][data_name])
-        #     one_process = list(map(lambda x: 0.0 if x is None else x, one_process))
-        #
-        #     X_test = np.array(one_process)
-        #     X_test = X_test.reshape((1, len(X_test)))
-        #     X_test = np.delete(X_test, X_zero_std, axis=1)
-        #
-        #     T2UCL1, T2UCL2, QUCL, T2, Q, CONTJ, contq = self.general_call({
-        #         'Xtrain': X_train,
-        #         'Xtest': X_test,
-        #     })
-        #
-        #     CONTJ_Pro = []
-        #     maxCON = max(CONTJ)
-        #     minCON = min(CONTJ)
-        #     for item in CONTJ:
-        #         mid = (item - minCON) / (maxCON - minCON)
-        #         CONTJ_Pro.append(mid)
-        #
-        #     contq_Pro = []
-        #     maxContq = max(contq.tolist())
-        #     minContq = min(contq.tolist())
-        #     for item in contq.tolist():
-        #         mid = (item - minContq) / (maxContq - minContq)
-        #         contq_Pro.append(mid)
-        #
-        #     upid_data_df = pd.DataFrame(data=X_test, columns=self.single_dimensional_variable)
-        #     result = self.unidimensional_monitoring(self, upid_data_df,
-        #                                        good_board_df,
-        #                                        self.single_dimensional_variable,
-        #                                        data_names_meas,
-        #                                        0.25, 0.05, 0.01)
-        #
-        #     diag_result.append({
-        #         "upid": data[i][0],
-        #         "toc": toc.strftime("%Y-%m-%d %H:%M:%S"),
-        #         "fqc_label": fqc_label,
-        #
-        #         "one_dimens": result,
-        #         "train_len": len(good_board_df),
-        #
-        #         "CONTJ": CONTJ_Pro,
-        #         "CONTQ": contq_Pro
-        #     })
-        #
-        #     # diag_result.append({
-        #     #     "upid": upid,
-        #     #     "toc": toc.strftime("%Y-%m-%d %H:%M:%S"),
-        #     #     "fqc_label": fqc_label,
-        #     #
-        #     #     "one_dimens": result,
-        #     #     "train_len": train_len,
-        #     #
-        #     #     "CONTJ": CONTJ_Pro,
-        #     #     "CONTQ": contq_Pro
-        #     # })
-
-
-        # for i in sorted(X_zero_std[0], reverse=True):
-        #     del data_names[i]
 
         return diag_result, 200
 
@@ -234,6 +166,7 @@ class diagnosisDataComputer():
         [r, y] = (P * P.T).shape
         I = np.eye(r, y)
         T2 = np.zeros((n, 1))
+        T2 = np.zeros((n, 1))
         Q = np.zeros((n, 1))
         for i in range(n):
             T2[i] = np.matrix(Xtest[i, :]) * P * np.matrix(
@@ -244,7 +177,7 @@ class diagnosisDataComputer():
         S = np.array(np.matrix(Xtest[test_Num, :]) * P[:, np.arange(0, num_pc)])
         S = S[0]
         r = []
-        print(lamda[i, 0], i)
+        # print(lamda[i, 0], i)
         for i in range(num_pc):
             if S[i] ** 2 / lamda[i, 0] > T2UCL1 / num_pc:
                 r.append(i)

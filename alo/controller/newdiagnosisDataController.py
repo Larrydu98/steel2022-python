@@ -1,15 +1,72 @@
-from ..models.ganttChartDataDB import getGanttChartDataDB
+import copy
+from scipy.stats import f
+from scipy.stats import norm
+import numpy as np
+import pika, traceback
 import pandas as pd
 from ..utils import CountGoodBadNoflag
+from ..utils import single_dimensional_variable, without_cooling_single_dimensional_variable, data_names_meas, \
+    diagnosisFlag
+from ..models.getDiagnosisDataDB import GetDiagnosisData
+from ..models.ganttChartDataDB import getGanttChartDataDB
+from  .diagnosisDataController import diagnosisDataComputer
 
-
-class getGanttChartData():
-    def __init__(self, parser, start_time, end_time,merge_limit,merge_conflict):
-        rows, col_names = getGanttChartDataDB.ganttChartDataDB(start_time, end_time)
-        label = ["tgtthickness", "tgtwidth", "tgtlength"]
+class newdiagnosisDataComputer():
+    def __init__(self, parser, start_time, end_time, merge_limit, merge_conflict, plate_limit):
+        # 获取甘特图数据
+        self.plate_limit = plate_limit
+        label = ["cooling_rate1", "cooling_start_temp", "cooling_stop_temp", "fqcflag", "productcategory",
+                 "slabthickness", "status_cooling", "steelspec", "tgtdischargetemp", "tgtplatelength2",
+                 "tgtplatethickness", "tgttmplatetemp", "tgtwidth", 'tgtthickness', 'tgtlength']
         for index in label:
             parser.add_argument(index, type=str, required=True)
-        self.post_table = parser.parse_args(strict=True)
+        self.args = parser.parse_args(strict=True)
+        post_table = {}
+        post_table['tgtwidth'] = self.args['tgtwidth']
+        post_table['tgtthickness'] = self.args['tgtthickness']
+        post_table['tgtlength'] = self.args['tgtlength']
+        gantt_chart = getGanttChartData(parser, start_time, end_time, merge_limit, merge_conflict,post_table)
+        self.gantt_res = gantt_chart.getGanttChartData()
+        self.diagnosisDataController()
+    def print(self):
+        print(self.gantt_res)
+
+    def diagnosisDataController(self):
+        res = []
+        for index, val in enumerate(self.gantt_res):
+            res.append({})
+            res[index]['batch'] = val["batch"]
+            res[index]['category'] = []
+            for category_index, category_val in enumerate(val['category']):
+                if category_val["merge_flag"]:
+                    cate_detail = {}
+                    upids = []
+                    for upid_val in category_val['detail']:
+                        upids.append(upid_val['upid'])
+                    self.args['upids'] = upids
+                #     获取数据
+                    dia_class = diagnosisDataComputer(self.args,self.plate_limit)
+                    dia_res, status_code = dia_class.getdiagnosisData()
+                    cate_detail['category_index'] = category_val["category_index"]
+                    cate_detail['detail'] = dia_res
+                    res[index]['category'].append(cate_detail)
+
+
+                else:
+                    continue
+        return res
+
+
+
+
+
+
+
+# 获取甘特图的数据
+class getGanttChartData():
+    def __init__(self, parser, start_time, end_time,merge_limit,merge_conflict,post_table):
+        rows, col_names = getGanttChartDataDB.ganttChartDataDB(start_time, end_time)
+        self.post_table = post_table
         self.gantt_data = pd.DataFrame(data=rows, columns=col_names).dropna(axis=0, how='all').reset_index(drop=True)
         self.merge_limit = int(merge_limit)
         self.merge_conflict = int(merge_conflict)
@@ -39,43 +96,23 @@ class getGanttChartData():
             for i, val in enumerate(value):
                 good_flag, bad_flag, no_flag = CountGoodBadNoflag(val['data'])
                 # platetype = val.iloc[0,:]['platetype']
-                if val['merge_flag']:
-                    result[index]['category'].append({
-                        'merge_flag': val['merge_flag'],
-                        'category_index': val['category_index'],
-                        'category_info': val['category_info'],
-                        'platetype': val['data'].iloc[0, :]['platetype'],
-                        'good_flag': good_flag,
-                        'bad_flag': bad_flag,
-                        'no_flag': no_flag,
-                        'total': len(val['data']),
-                        'startTime': val['data'].iloc[0].toc.strftime("%Y-%m-%d %H:%M:%S"),
-                        'endTime': val['data'].iloc[len(val['data']) - 1].toc.strftime("%Y-%m-%d %H:%M:%S"),
-                        "tgtwidth_avg": round(val['data'].tgtwidth.mean(), 3),
-                        "tgtlength_avg": round(val['data'].tgtlength.mean(), 3),
-                        "tgtthickness_avg": round(val['data'].tgtthickness.mean(), 5),
-                        "tgtthickness_avg": round(val['data'].tgtthickness.mean(), 5),
-                        'detail': []
+                result[index]['category'].append({
+                    'merge_flag': val['merge_flag'],
+                    'category_index':val['category_index'],
+                    'platetype': val['data'].iloc[0, :]['platetype'],
+                    'good_flag': good_flag,
+                    'bad_flag': bad_flag,
+                    'no_flag': no_flag,
+                    'total': len(val['data']),
+                    'startTime': val['data'].iloc[0].toc.strftime("%Y-%m-%d %H:%M:%S"),
+                    'endTime': val['data'].iloc[len(val['data']) - 1].toc.strftime("%Y-%m-%d %H:%M:%S"),
+                    "tgtwidth_avg": round(val['data'].tgtwidth.mean(), 3),
+                    "tgtlength_avg": round(val['data'].tgtlength.mean(), 3),
+                    "tgtthickness_avg": round(val['data'].tgtthickness.mean(), 5),
+                    "tgtthickness_avg": round(val['data'].tgtthickness.mean(), 5),
+                    'detail': []
 
-                    })
-                else:
-                    result[index]['category'].append({
-                        'merge_flag': val['merge_flag'],
-                        'category_index': val['category_index'],
-                        'platetype': val['data'].iloc[0, :]['platetype'],
-                        'good_flag': good_flag,
-                        'bad_flag': bad_flag,
-                        'no_flag': no_flag,
-                        'total': len(val['data']),
-                        'startTime': val['data'].iloc[0].toc.strftime("%Y-%m-%d %H:%M:%S"),
-                        'endTime': val['data'].iloc[len(val['data']) - 1].toc.strftime("%Y-%m-%d %H:%M:%S"),
-                        "tgtwidth_avg": round(val['data'].tgtwidth.mean(), 3),
-                        "tgtlength_avg": round(val['data'].tgtlength.mean(), 3),
-                        "tgtthickness_avg": round(val['data'].tgtthickness.mean(), 5),
-                        "tgtthickness_avg": round(val['data'].tgtthickness.mean(), 5),
-                        'detail': []
-
-                    })
+                })
                 # print(len(val['data']), val['merge_flag'])
                 # print(val['platetype'])
 
@@ -87,8 +124,7 @@ class getGanttChartData():
                         'tgtwidth': df_row['tgtwidth'],
                         'tgtlength': df_row['tgtlength'],
                         'tgtthickness': df_row['tgtthickness'],
-                        'flag_lable': self.JudgePlateQuality(df_row),
-                        'status_cooling': df_row['status_cooling']
+                        'flag_lable': self.JudgePlateQuality(df_row)
                     })
 
         # #
@@ -133,9 +169,7 @@ class getGanttChartData():
                 might_merge_arr_index = batch_val.loc[batch_val['platetype'] == val].index
                 # 新增长度宽度厚度三个选择
                 might_merge_df = batch_val.loc[batch_val['platetype'] == val]
-                coding_list, specification_list = self.DataframeLable(might_merge_df)
-                # 编码
-                might_merge_df.insert(loc=len(might_merge_df.columns), column='coding', value=coding_list)
+                might_merge_df.insert(loc=len(might_merge_df.columns), column='coding', value=self.DataframeLable(might_merge_df))
                 groupby_df = might_merge_df.groupby(might_merge_df['coding']).count()
                 unable_merge_list = list(groupby_df.drop(groupby_df[groupby_df.upid >= self.merge_limit].index).index)
                 might_able_merge_list = list(groupby_df.drop(groupby_df[groupby_df.upid < self.merge_limit].index).index)
@@ -147,16 +181,13 @@ class getGanttChartData():
                     for res_index, res_val in enumerate(result):
                         # print(i, res_index)
                         if len(res_val) >= self.merge_limit:
-                            category_info = {}
-                            for spe_i, spe_vla in enumerate(specification_list):
-                                category_info[spe_vla] = specification_list[spe_vla][int(might_merge_df.loc[res_val].iloc[0,:]['coding'][spe_i])]
-                            category_info['cooling'] = int(might_merge_df.loc[res_val].iloc[0,:]['coding'][-1])
-                            category_plate.append({'merge_flag': True, 'data': batch_val.loc[res_val], "category_info": category_info})
+                            category_plate.append({'merge_flag': True, 'data': batch_val.loc[res_val]})
                         else:
                             category_plate.append({'merge_flag': False, 'data': batch_val.loc[res_val]})
-            category_plate.sort(key=lambda k: (k.get('data').iloc[0].toc))
+                        category_plate.sort(key=lambda k: (k.get('data').iloc[0].toc))
             for category_plate_index,category_plate_val in enumerate(category_plate):
                 category_plate_val['category_index'] = category_plate_index + 1
+
             res.append(category_plate)
         return res
 
@@ -185,33 +216,20 @@ class getGanttChartData():
     # 对dataframe进行打标签
     def DataframeLable(self,data):
         # 厚度0.01宽度宽度0.8，长度4
+        s_list = {}
         coding_list = [''] * len(data)
-        specification_list = {}
         for val in self.post_table:
-            specification_list[val] = []
             label_max = data[val].max()
             label_min = data[val].min()
             s_bin = []
             point_move = label_min
-            while point_move <= label_max:
+            while point_move < label_max:
                 s_bin.append(point_move)
                 point_move += float(self.post_table[val])
             s_bin.append(point_move)
-
-            for i in range(len(s_bin)):
-                if i < len(s_bin) - 1:
-                    specification_list[val].append([s_bin[i], s_bin[i + 1]])
+            s_list[val] = s_bin
             for index, pd_val in enumerate(pd.cut(data[val],s_bin,labels=False,right=False)):
                 coding_list[index] += str(pd_val)
 
-        for coding_index in range(len(coding_list)):
-            coding_list[coding_index] += str(data.iloc[coding_index,:]['status_cooling'])
-
-        return coding_list,specification_list
-
-
-
-
-
-
+        return coding_list
 

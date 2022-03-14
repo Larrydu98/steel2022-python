@@ -34,7 +34,7 @@ fpika = FPika()
 # from . import singelSteel
 # from . import getMareyDataApi
 # from . import BoardNumApi
-from . import newGetMareyDataApi
+# from . import newGetMareyDataApi
 # from . import diagnosisDataByTimeApi
 # from . import monitorDataByTimeApi
 # from . import newVisualizationByBatch
@@ -43,4 +43,5 @@ from . import newGetMareyDataApi
 from . import  GanttChartApi
 from . import PlateYieldStaisticsApi
 from . import  DiagnosisDataByUpid
+from . import GetInfoDataApi
 # from . import modelPredictCsvAllFlagApi

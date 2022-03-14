@@ -1,6 +1,5 @@
 import psycopg2
 import json
-import copy
 from ..utils import readConfig, allGetSQLData
 from flask_restful import Resource, reqparse
 
@@ -9,14 +8,9 @@ parser = reqparse.RequestParser(trim=True, bundle_errors=True)
 
 class GetDiagnosisData:
     def __init__(self, args, plate_limit):
-        # label = ["cooling_rate1", "cooling_start_temp", "cooling_stop_temp", "fqcflag", "productcategory",
-        #          "slabthickness", "status_cooling", "steelspec", "tgtdischargetemp", "tgtplatelength2",
-        #          "tgtplatethickness", "tgttmplatetemp", "tgtwidth",'upids']
-        # for index in label:
-        #     parser.add_argument(index, type=str, required=True)
-        # self.args = parser.parse_args(strict=True)
-        self.args = copy.deepcopy(args)
-        self.args['upids'] =  str(self.args['upids']).replace('[', '(').replace(']', ')')
+
+        self.args = args
+        # self.args['upids'] =  self.args['upids'].replace('[', '(').replace(']', ')')
         self.plate_limit = plate_limit
 
 

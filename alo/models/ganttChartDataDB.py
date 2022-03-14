@@ -17,7 +17,8 @@ class getGanttChartDataDB:
                 dd.toc,
                 dd.fqc_label as label,
                 (fqc_label->>'method1')::json->>'data' as flag_lable,
-                dd.status_fqc
+                dd.status_fqc,
+                dd.status_cooling
                 from  app.deba_dump_data dd 
         ''' + '''
         where {start_time} 
