@@ -85,3 +85,42 @@ class GetDiagnosisData:
 
     # and {status_stats}
     # and {status_cooling}
+
+
+
+
+
+class GetDiAllTestDataDB:
+    @staticmethod
+    def getDiaTestDataDB(start_time, end_time):
+        SQLquery = '''
+         select
+                dd.upid,
+                dd.platetype,
+                dd.tgtwidth,
+                dd.tgtlength,
+                dd.tgtthickness,
+                dd.toc,
+                dd.fqc_label as label,
+                (fqc_label->>'method1')::json->>'data' as flag_lable,
+                dd.status_fqc,
+                dd.status_cooling,
+                
+                lmpd.tgtdischargetemp,
+                (case when lmpd.shapecode ='11' or lmpd.shapecode='12' then lmpd.tgtplatethickness5 else lmpd.tgtplatethickness1 end)* 1000 as tgtplatethickness,
+                lmpd.tgtplatelength2,
+                lmpd.tgttmplatetemp
+                from  dcenter.l2_m_primary_data lmpd                left join dcenter.l2_m_plate lmp on lmpd.slabid = lmp.slabid
+                left join dcenter.l2_cc_pdi lcp  on lmpd.slabid = lcp.slab_no
+                right join app.deba_dump_data dd on dd.upid = lmp.upid
+        ''' + '''
+        where {start_time} 
+        and {end_time}
+        order by dd.toc
+        '''.format(start_time='1=1' if start_time == 'all' else "dd.toc >= to_timestamp('" + str(
+            start_time) + "','yyyy-mm-dd hh24:mi:ss') ",
+                   end_time='1=1' if end_time == 'all' else "dd.toc <= to_timestamp('" + str(
+                       end_time) + "','yyyy-mm-dd hh24:mi:ss') ",
+                   )
+        rows, col_names = allGetSQLData(SQLquery)
+        return rows, col_names

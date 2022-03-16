@@ -22,9 +22,9 @@ class GetDiagnosisData:
 
     # 获取训练集dataframe
     def getDaignosisTrainData(self):
-        tgtdischargetemp, tgtplatethickness, tgtplatelength2, tgttmplatetemp = eval(
-            self.args["tgtdischargetemp"]), eval(self.args["tgtplatethickness"]), eval(
-            self.args["tgtplatelength2"]), eval(self.args["tgttmplatetemp"]),
+        # tgtdischargetemp, tgtplatethickness, tgtplatelength2, tgttmplatetemp = eval(
+        #     self.args["tgtdischargetemp"]), eval(self.args["tgtplatethickness"]), eval(
+        #     self.args["tgtplatelength2"]), eval(self.args["tgttmplatetemp"]),
         SQLquery = '''
                 select dd.upid,
                 lmpd.productcategory,
@@ -48,18 +48,18 @@ class GetDiagnosisData:
                 and {fqcflag}
                 ORDER BY dd.toc  DESC 
                 Limit  {limit}'''.format(
-            tgtdischargetemp='1=1' if tgtdischargetemp == [] else "lmpd.tgtdischargetemp > " + str(
-                tgtdischargetemp[0]) + " and lmpd.tgtdischargetemp < " + str(tgtdischargetemp[1]),
-            tgtplatethickness='1=1' if tgtplatethickness == [] else "(case when lmpd.shapecode ='11' or lmpd.shapecode='12' then lmpd.tgtplatethickness5 else lmpd.tgtplatethickness1 end)* 1000 > " + str(
-                tgtplatethickness[
+            tgtdischargetemp='1=1' if self.args["tgtdischargetemp"] == [] else "lmpd.tgtdischargetemp > " + str(
+                self.args["tgtdischargetemp"][0]) + " and lmpd.tgtdischargetemp < " + str(self.args["tgtdischargetemp"][1]),
+            tgtplatethickness='1=1' if self.args["tgtplatethickness"] == [] else "(case when lmpd.shapecode ='11' or lmpd.shapecode='12' then lmpd.tgtplatethickness5 else lmpd.tgtplatethickness1 end)* 1000 > " + str(
+                self.args["tgtplatethickness"][
                     0]) + " and (case when lmpd.shapecode ='11' or lmpd.shapecode='12' then lmpd.tgtplatethickness5 else lmpd.tgtplatethickness1 end)* 1000 < " + str(
-                tgtplatethickness[1]),
-            tgtplatelength2='1=1' if tgtplatelength2 == [] else "lmpd.tgtplatelength2 > " + str(
-                tgtplatelength2[0]) + " and lmpd.tgtplatelength2 < " + str(tgtplatelength2[1]),
-            tgttmplatetemp='1=1' if tgttmplatetemp == [] else "lmpd.tgttmplatetemp > " + str(
-                tgttmplatetemp[0]) + " and lmpd.tgttmplatetemp < " + str(tgttmplatetemp[1]),
-            status_cooling='dd.status_cooling = ' + self.args['status_cooling'],
-            fqcflag='dd.status_stats= 0' + (' ' if self.args['fqcflag'] == '1' else ' and dd.status_fqc= 0 '),
+                self.args["tgtplatethickness"][1]),
+            tgtplatelength2='1=1' if self.args["tgtplatelength2"][1] == [] else "lmpd.tgtplatelength2 > " + str(
+                self.args["tgtplatelength2"][0]) + " and lmpd.tgtplatelength2 < " + str(self.args["tgtplatelength2"][1]),
+            tgttmplatetemp='1=1' if self.args["tgttmplatetemp"][1] == [] else "lmpd.tgttmplatetemp > " + str(
+                self.args["tgttmplatetemp"][0]) + " and lmpd.tgttmplatetemp < " + str(self.args["tgttmplatetemp"][1]),
+            status_cooling='dd.status_cooling = ' + str(int( self.args['status_cooling'])),
+            fqcflag='dd.status_stats= 0' + (' ' if str(int(self.args['fqcflag'])) == '1' else ' and dd.status_fqc= 0 '),
             limit=int(self.plate_limit)
         )
         train_rows, train_col_names = allGetSQLData(SQLquery)
@@ -85,7 +85,7 @@ class GetDiagnosisData:
                 and status_stats = 0 
                 and {status_cooling}
                 order by toc
-        '''.format(upid='upid in ' + self.args['upids'], status_cooling='status_cooling = ' + self.args["status_cooling"])
+        '''.format(upid='upid in ' + self.args['upids'], status_cooling='status_cooling = ' + str(int(self.args["status_cooling"])))
         upid_rows, upids_col_names = allGetSQLData(SQLquery)
         return upid_rows, upids_col_names
 

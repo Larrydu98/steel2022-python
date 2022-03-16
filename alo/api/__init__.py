@@ -42,6 +42,6 @@ fpika = FPika()
 
 from . import  GanttChartApi
 from . import PlateYieldStaisticsApi
-from . import  DiagnosisDataByUpid
+from . import  DiagnosisDataApi
 from . import GetInfoDataApi
 # from . import modelPredictCsvAllFlagApi

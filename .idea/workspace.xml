@@ -17,24 +17,13 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="680517ed-db17-45a9-ab5d-59336ab7549e" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/alo/api/GetInfoDataApi.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/alo/controller/GetInfoDataController.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/alo/controller/newdiagnosisDataController.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/alo/models/GetInfoDataDB.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/alo/models/newgetDiagnosisDataDB.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/python-backend.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/python-backend.iml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/alo/api/DiagnosisDataByUpid.py" beforeDir="false" afterPath="$PROJECT_DIR$/alo/api/DiagnosisDataByUpid.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/alo/api/GanttChartApi.py" beforeDir="false" afterPath="$PROJECT_DIR$/alo/api/GanttChartApi.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/alo/api/DiagnosisDataByUpid.py" beforeDir="false" afterPath="$PROJECT_DIR$/alo/api/DiagnosisDataApi.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/alo/api/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/alo/api/__init__.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/alo/api/newGetMareyDataApi.py" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/alo/controller/GanttChartDataControler.py" beforeDir="false" afterPath="$PROJECT_DIR$/alo/controller/GanttChartDataControler.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/alo/controller/diagnosisDataController.py" beforeDir="false" afterPath="$PROJECT_DIR$/alo/controller/diagnosisDataController.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/alo/controller/newGetMareyDataController.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/alo/models/ganttChartDataDB.py" beforeDir="false" afterPath="$PROJECT_DIR$/alo/models/ganttChartDataDB.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/alo/controller/newdiagnosisDataController.py" beforeDir="false" afterPath="$PROJECT_DIR$/alo/controller/newdiagnosisDataController.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/alo/models/getDiagnosisDataDB.py" beforeDir="false" afterPath="$PROJECT_DIR$/alo/models/getDiagnosisDataDB.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/alo/models/getMareyDataFromDB.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/requirements.txt" beforeDir="false" afterPath="$PROJECT_DIR$/requirements.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/alo/models/newgetDiagnosisDataDB.py" beforeDir="false" afterPath="$PROJECT_DIR$/alo/models/newgetDiagnosisDataDB.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -229,7 +218,10 @@
       <workItem from="1646818076628" duration="8449000" />
       <workItem from="1646874735516" duration="13137000" />
       <workItem from="1646959776802" duration="14667000" />
-      <workItem from="1647218249530" duration="11336000" />
+      <workItem from="1647218249530" duration="27715000" />
+      <workItem from="1647305815950" duration="7790000" />
+      <workItem from="1647351235408" duration="1225000" />
+      <workItem from="1647390956691" duration="4180000" />
     </task>
     <servers />
   </component>
@@ -282,6 +274,10 @@
       <screen x="0" y="0" width="1920" height="1050" />
     </state>
     <state x="713" y="325" key="#com.intellij.fileTypes.FileTypeChooser/0.0.1920.1050/1920.0.1920.1050@0.0.1920.1050" timestamp="1639552850533" />
+    <state x="690" y="271" key="#com.intellij.refactoring.safeDelete.UnsafeUsagesDialog" timestamp="1647259247039">
+      <screen x="0" y="0" width="1920" height="1050" />
+    </state>
+    <state x="690" y="271" key="#com.intellij.refactoring.safeDelete.UnsafeUsagesDialog/0.0.1920.1050/1920.0.1920.1050@0.0.1920.1050" timestamp="1647259247039" />
     <state x="634" y="431" key="#com.jetbrains.python.refactoring.move.PyMakeFunctionTopLevelDialog" timestamp="1646571497258">
       <screen x="0" y="0" width="1920" height="1050" />
     </state>
@@ -299,54 +295,54 @@
     </state>
     <state x="734" y="221" key="FileChooserDialogImpl/0.0.1920.1050/1920.0.1920.1050@0.0.1920.1050" timestamp="1646875000283" />
     <state x="2654" y="221" key="FileChooserDialogImpl/0.0.1920.1050/1920.0.1920.1050@1920.0.1920.1050" timestamp="1641872643713" />
-    <state width="1877" height="319" key="GridCell.Tab.0.bottom" timestamp="1647241085194">
+    <state width="1877" height="285" key="GridCell.Tab.0.bottom" timestamp="1647437594820">
       <screen x="0" y="0" width="1920" height="1050" />
     </state>
-    <state width="1877" height="319" key="GridCell.Tab.0.bottom/0.0.1920.1050/1920.0.1920.1050@0.0.1920.1050" timestamp="1647241085194" />
+    <state width="1877" height="285" key="GridCell.Tab.0.bottom/0.0.1920.1050/1920.0.1920.1050@0.0.1920.1050" timestamp="1647437594820" />
     <state width="1877" height="444" key="GridCell.Tab.0.bottom/0.0.1920.1050/1920.0.1920.1050@1920.0.1920.1050" timestamp="1641872644613" />
-    <state width="1877" height="319" key="GridCell.Tab.0.center" timestamp="1647241085194">
+    <state width="1877" height="285" key="GridCell.Tab.0.center" timestamp="1647437594819">
       <screen x="0" y="0" width="1920" height="1050" />
     </state>
-    <state width="1877" height="319" key="GridCell.Tab.0.center/0.0.1920.1050/1920.0.1920.1050@0.0.1920.1050" timestamp="1647241085194" />
+    <state width="1877" height="285" key="GridCell.Tab.0.center/0.0.1920.1050/1920.0.1920.1050@0.0.1920.1050" timestamp="1647437594819" />
     <state width="1877" height="444" key="GridCell.Tab.0.center/0.0.1920.1050/1920.0.1920.1050@1920.0.1920.1050" timestamp="1641872644613" />
-    <state width="1877" height="319" key="GridCell.Tab.0.left" timestamp="1647241085194">
+    <state width="1877" height="285" key="GridCell.Tab.0.left" timestamp="1647437594819">
       <screen x="0" y="0" width="1920" height="1050" />
     </state>
-    <state width="1877" height="319" key="GridCell.Tab.0.left/0.0.1920.1050/1920.0.1920.1050@0.0.1920.1050" timestamp="1647241085194" />
+    <state width="1877" height="285" key="GridCell.Tab.0.left/0.0.1920.1050/1920.0.1920.1050@0.0.1920.1050" timestamp="1647437594819" />
     <state width="1877" height="444" key="GridCell.Tab.0.left/0.0.1920.1050/1920.0.1920.1050@1920.0.1920.1050" timestamp="1641872644613" />
-    <state width="1877" height="319" key="GridCell.Tab.0.right" timestamp="1647241085194">
+    <state width="1877" height="285" key="GridCell.Tab.0.right" timestamp="1647437594820">
       <screen x="0" y="0" width="1920" height="1050" />
     </state>
-    <state width="1877" height="319" key="GridCell.Tab.0.right/0.0.1920.1050/1920.0.1920.1050@0.0.1920.1050" timestamp="1647241085194" />
+    <state width="1877" height="285" key="GridCell.Tab.0.right/0.0.1920.1050/1920.0.1920.1050@0.0.1920.1050" timestamp="1647437594820" />
     <state width="1877" height="444" key="GridCell.Tab.0.right/0.0.1920.1050/1920.0.1920.1050@1920.0.1920.1050" timestamp="1641872644613" />
-    <state width="1877" height="319" key="GridCell.Tab.1.bottom" timestamp="1647241085194">
+    <state width="1877" height="285" key="GridCell.Tab.1.bottom" timestamp="1647437594820">
       <screen x="0" y="0" width="1920" height="1050" />
     </state>
-    <state width="1877" height="319" key="GridCell.Tab.1.bottom/0.0.1920.1050/1920.0.1920.1050@0.0.1920.1050" timestamp="1647241085194" />
+    <state width="1877" height="285" key="GridCell.Tab.1.bottom/0.0.1920.1050/1920.0.1920.1050@0.0.1920.1050" timestamp="1647437594820" />
     <state width="1877" height="444" key="GridCell.Tab.1.bottom/0.0.1920.1050/1920.0.1920.1050@1920.0.1920.1050" timestamp="1641872644613" />
-    <state width="1877" height="319" key="GridCell.Tab.1.center" timestamp="1647241085194">
+    <state width="1877" height="285" key="GridCell.Tab.1.center" timestamp="1647437594820">
       <screen x="0" y="0" width="1920" height="1050" />
     </state>
-    <state width="1877" height="319" key="GridCell.Tab.1.center/0.0.1920.1050/1920.0.1920.1050@0.0.1920.1050" timestamp="1647241085194" />
+    <state width="1877" height="285" key="GridCell.Tab.1.center/0.0.1920.1050/1920.0.1920.1050@0.0.1920.1050" timestamp="1647437594820" />
     <state width="1877" height="444" key="GridCell.Tab.1.center/0.0.1920.1050/1920.0.1920.1050@1920.0.1920.1050" timestamp="1641872644613" />
-    <state width="1877" height="319" key="GridCell.Tab.1.left" timestamp="1647241085194">
+    <state width="1877" height="285" key="GridCell.Tab.1.left" timestamp="1647437594820">
       <screen x="0" y="0" width="1920" height="1050" />
     </state>
-    <state width="1877" height="319" key="GridCell.Tab.1.left/0.0.1920.1050/1920.0.1920.1050@0.0.1920.1050" timestamp="1647241085194" />
+    <state width="1877" height="285" key="GridCell.Tab.1.left/0.0.1920.1050/1920.0.1920.1050@0.0.1920.1050" timestamp="1647437594820" />
     <state width="1877" height="444" key="GridCell.Tab.1.left/0.0.1920.1050/1920.0.1920.1050@1920.0.1920.1050" timestamp="1641872644613" />
-    <state width="1877" height="319" key="GridCell.Tab.1.right" timestamp="1647241085194">
+    <state width="1877" height="285" key="GridCell.Tab.1.right" timestamp="1647437594820">
       <screen x="0" y="0" width="1920" height="1050" />
     </state>
-    <state width="1877" height="319" key="GridCell.Tab.1.right/0.0.1920.1050/1920.0.1920.1050@0.0.1920.1050" timestamp="1647241085194" />
+    <state width="1877" height="285" key="GridCell.Tab.1.right/0.0.1920.1050/1920.0.1920.1050@0.0.1920.1050" timestamp="1647437594820" />
     <state width="1877" height="444" key="GridCell.Tab.1.right/0.0.1920.1050/1920.0.1920.1050@1920.0.1920.1050" timestamp="1641872644613" />
     <state x="2381" y="169" key="SettingsEditor" timestamp="1639552515404">
       <screen x="1920" y="0" width="1920" height="1050" />
     </state>
     <state x="2381" y="169" key="SettingsEditor/0.0.1920.1050/1920.0.1920.1050@1920.0.1920.1050" timestamp="1639552515404" />
-    <state width="804" height="535" key="XDebugger.FullValuePopup" timestamp="1647239034237">
+    <state width="804" height="535" key="XDebugger.FullValuePopup" timestamp="1647349233912">
       <screen x="0" y="0" width="1920" height="1050" />
     </state>
-    <state width="804" height="535" key="XDebugger.FullValuePopup/0.0.1920.1050/1920.0.1920.1050@0.0.1920.1050" timestamp="1647239034236" />
+    <state width="804" height="535" key="XDebugger.FullValuePopup/0.0.1920.1050/1920.0.1920.1050@0.0.1920.1050" timestamp="1647349233912" />
     <state x="565" y="135" key="com.intellij.openapi.editor.actions.MultiplePasteAction$ClipboardContentChooser" timestamp="1639728914636">
       <screen x="0" y="0" width="1920" height="1050" />
     </state>
@@ -355,10 +351,10 @@
       <screen x="0" y="0" width="1920" height="1050" />
     </state>
     <state x="661" y="126" width="596" height="798" key="find.popup/0.0.1920.1050/1920.0.1920.1050@0.0.1920.1050" timestamp="1641458216613" />
-    <state x="623" y="227" width="672" height="685" key="search.everywhere.popup" timestamp="1646984362160">
+    <state x="623" y="227" width="672" height="685" key="search.everywhere.popup" timestamp="1647256819133">
       <screen x="0" y="0" width="1920" height="1050" />
     </state>
-    <state x="623" y="227" width="672" height="685" key="search.everywhere.popup/0.0.1920.1050/1920.0.1920.1050@0.0.1920.1050" timestamp="1646984362160" />
+    <state x="623" y="227" width="672" height="685" key="search.everywhere.popup/0.0.1920.1050/1920.0.1920.1050@0.0.1920.1050" timestamp="1647256819133" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -378,6 +374,11 @@
           <line>54</line>
           <option name="timeStamp" value="5" />
         </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/alo/controller/diagnosisDataController.py</url>
+          <line>14</line>
+          <option name="timeStamp" value="198" />
+        </line-breakpoint>
       </breakpoints>
       <default-breakpoints>
         <breakpoint type="python-exception">
@@ -389,18 +390,17 @@
     </breakpoint-manager>
     <watches-manager>
       <configuration name="PythonConfigurationType">
-        <watch expression="rolling_dic" language="Python" />
-        <watch expression="rolling_df" language="Python" />
-        <watch expression="rolling_rows" language="Python" />
+        <watch expression="res_args" language="Python" />
       </configuration>
     </watches-manager>
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
     <SUITE FILE_PATH="coverage/python_backend$getMareyDataController.coverage" NAME="getMareyDataController Coverage Results" MODIFIED="1621333800891" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/alo/controller" />
+    <SUITE FILE_PATH="coverage/steel2021_python$run.coverage" NAME="run Coverage Results" MODIFIED="1647437494360" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/python_backend$getMareyData.coverage" NAME="getMareyData Coverage Results" MODIFIED="1621330393944" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/alo/models" />
     <SUITE FILE_PATH="coverage/python_backend$getMareyDataFromDB.coverage" NAME="getMareyDataFromDB Coverage Results" MODIFIED="1621334841721" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/alo/models" />
     <SUITE FILE_PATH="coverage/python_backend$getMareyDataFromDB__1_.coverage" NAME="getMareyDataFromDB (1) Coverage Results" MODIFIED="1621334995114" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/alo/models" />
-    <SUITE FILE_PATH="coverage/steel2022_python$run.coverage" NAME="run Coverage Results" MODIFIED="1647240777672" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/steel2022_python$run.coverage" NAME="run Coverage Results" MODIFIED="1647349855569" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/python_backend_V2_1$run.coverage" NAME="run Coverage Results" MODIFIED="1646013622207" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/python_backend$run.coverage" NAME="run Coverage Results" MODIFIED="1623636115290" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
   </component>

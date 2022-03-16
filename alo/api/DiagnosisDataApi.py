@@ -6,7 +6,7 @@ from ..controller.newdiagnosisDataController import newdiagnosisDataComputer
 parser = reqparse.RequestParser(trim=True, bundle_errors=True)
 
 
-class diagnosisDataByUpidApi(Resource):
+class DiagnosisDataApi(Resource):
     '''
     getFlag
     '''
@@ -22,5 +22,5 @@ class diagnosisDataByUpidApi(Resource):
         return data, 200, {'Access-Control-Allow-Origin': '*'}
 
 
-api.add_resource(diagnosisDataByUpidApi,
+api.add_resource(DiagnosisDataApi,
                  '/v2.0/DiagnosisDataApi/<start_time>/<end_time>/<merge_limit>/<merge_conflict>/<plate_limit>/')

@@ -74,7 +74,6 @@ class getGanttChartData():
                         "tgtthickness_avg": round(val['data'].tgtthickness.mean(), 5),
                         "tgtthickness_avg": round(val['data'].tgtthickness.mean(), 5),
                         'detail': []
-
                     })
                 # print(len(val['data']), val['merge_flag'])
                 # print(val['platetype'])
