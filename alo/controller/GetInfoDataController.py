@@ -12,19 +12,13 @@ class GetInfoDataController:
         self.merge_limit, self.merge_conflict = int(merge_limit), int(merge_conflict)
         self.post_table = args
         his_rows, his_col_names = res.getCurrentData()
-        self.his_dataframe = pd.DataFrame(data=his_rows, columns=his_col_names).dropna(axis=0, how='all').reset_index(
-            drop=True)
+        self.his_dataframe = pd.DataFrame(data=his_rows, columns=his_col_names).dropna(axis=0, how='all').reset_index(drop=True)
 
     def getInfoData(self):
-        minute_diff = 30
         res = {}
-        process_list = []
         production_rhythm_list = []
-        max_list, min_list = [], []
         merge_list = self.getMergeList()
         for mer_index, mer_val in enumerate(merge_list):
-            if mer_index == 1:
-                print('**')
             res['series' + str(mer_index + 1)] = {}
             merge_df = self.his_dataframe.loc[mer_val]
             process_df = processDataframe(merge_df)
@@ -38,7 +32,7 @@ class GetInfoDataController:
                                                                   process_mean['heat3'], process_mean['heat4'],
                                                                   process_mean['heat5']]
             res['series' + str(mer_index + 1)]['rolling_mean'] = [process_mean['RmF3Pass'], process_mean['RmL3Pass'],
-                                                                  process_mean['RmEnd'], process_mean['FmStart'],process_mean['FmF3Pass'],
+                                                                  process_mean['RmEnd'],process_mean['FmF3Pass'],
                                                                   process_mean['FmL3Pass'], process_mean['FmEnd']]
             res['series' + str(mer_index + 1)]['cooling_mean'] = [process_mean['CcDQEnd'], process_mean['CcACCEnd']]
             res['series' + str(mer_index + 1)]['total_mean'] = [process_mean['heat_total'],
@@ -46,21 +40,21 @@ class GetInfoDataController:
             res['series' + str(mer_index + 1)]['total_var'] = [process_df['heat_total'].var(),
                                                                process_df['rolling_total'].var(),
                                                                process_df['CcTotal'].var()]
-            if mer_index == 0:
-                max_df = process_df.max()
-                continue
-            else:
-                max_df = pd.concat([max_df, process_df.max()], axis=1)
-        all_max = max_df.max(axis=1)
+        #     if mer_index == 0:
+        #         max_df = process_df.max()
+        #         continue
+        #     else:
+        #         max_df = pd.concat([max_df, process_df.max()], axis=1)
+        # all_max = max_df.max(axis=1)
         # 添加元素
-        res['max_detail'] = {}
-        res['max_detail']['heating_max'] = [all_max['heat1'], all_max['heat2'], all_max['heat3'], all_max['heat4'],
-                                            all_max['heat5']]
-        res['max_detail']['rolling_max'] = [all_max['RmF3Pass'], all_max['RmL3Pass'], all_max['RmEnd'],all_max['FmStart'],
-                                            all_max['FmF3Pass'], all_max['FmL3Pass'], all_max['FmEnd']]
-        res['max_detail']['cooling__max'] = [all_max['CcDQEnd'], all_max['CcACCEnd']]
-        res['max_detail']['total_max'] = [max(production_rhythm_list), all_max['heat_total'], all_max['rolling_total'],
-                                          all_max['CcTotal']]
+        # res['max_detail'] = {}
+        # res['max_detail']['heating_max'] = [all_max['heat1'], all_max['heat2'], all_max['heat3'], all_max['heat4'],
+        #                                     all_max['heat5']]
+        # res['max_detail']['rolling_max'] = [all_max['RmF3Pass'], all_max['RmL3Pass'], all_max['RmEnd'],all_max['FmStart'],
+        #                                     all_max['FmF3Pass'], all_max['FmL3Pass'], all_max['FmEnd']]
+        # res['max_detail']['cooling__max'] = [all_max['CcDQEnd'], all_max['CcACCEnd']]
+        # res['max_detail']['total_max'] = [max(production_rhythm_list), all_max['heat_total'], all_max['rolling_total'],
+        #                                   all_max['CcTotal']]
         return res
 
     def getMergeList(self):
@@ -166,29 +160,24 @@ def processDataframe(data):
         # 精轧
         if len(fm_list) != 0:
             if len(fm_list) <= 3:
-                FmStart = fm_list[0]['real_time'] - rm_list[-1]['real_time']
                 FmF3Pass = fm_list[-1]['real_time'] - rm_list[0]['real_time']
 
-                rolling_dic["FmStart"] = FmStart.total_seconds()
                 rolling_dic["FmF3Pass"] = FmF3Pass.total_seconds()
                 rolling_dic["FmL3Pass"] = 0
                 rolling_dic["FmEnd"] = 0
             elif len(fm_list) > 3 and len(fm_list) <= 6:
-                FmStart = fm_list[0]['real_time'] - rm_list[-1]['real_time']
+
                 FmF3Pass = fm_list[2]['real_time'] - fm_list[0]['real_time']
                 FmL3Pass = fm_list[-1]['real_time'] - fm_list[2]['real_time']
 
-                rolling_dic["FmStart"] = FmStart.total_seconds()
                 rolling_dic["FmF3Pass"] = FmF3Pass.total_seconds()
                 rolling_dic["FmL3Pass"] = FmL3Pass.total_seconds()
                 rolling_dic["FmEnd"] = 0
             elif len(fm_list) > 6:
-                FmStart = fm_list[0]['real_time'] - rm_list[-1]['real_time']
                 FmF3Pass = fm_list[2]['real_time'] - fm_list[0]['real_time']
                 FmL3Pass = fm_list[-3]['real_time'] - fm_list[2]['real_time']
                 FmEnd = fm_list[-1]['real_time'] - fm_list[-3]['real_time']
 
-                rolling_dic["FmStart"] = FmStart.total_seconds()
                 rolling_dic["FmF3Pass"] = FmF3Pass.total_seconds()
                 rolling_dic["FmL3Pass"] = FmL3Pass.total_seconds()
                 rolling_dic["FmEnd"] = FmEnd.total_seconds()

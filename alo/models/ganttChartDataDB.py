@@ -18,8 +18,20 @@ class getGanttChartDataDB:
                 dd.fqc_label as label,
                 (fqc_label->>'method1')::json->>'data' as flag_lable,
                 dd.status_fqc,
-                dd.status_cooling
-                from  app.deba_dump_data dd 
+                dd.status_cooling,
+                dd.stops,
+                lmpd.tgtdischargetemp,
+                lmpd.tgttmplatetemp,
+                l2ff60.in_fce_time,
+                l2ff60.discharge_time,
+                l2ff60.staying_time_pre,
+                l2ff60.staying_time_1,
+                l2ff60.staying_time_2,
+                l2ff60.staying_time_soak
+                
+                from  app.deba_dump_data dd
+                right join dcenter.l2_m_primary_data lmpd on dd.upid = lmpd.upid 
+                left join dcenter.l2_fu_flftr60 l2ff60 on dd.upid = l2ff60.upid
         ''' + '''
         where {start_time} 
         and {end_time}

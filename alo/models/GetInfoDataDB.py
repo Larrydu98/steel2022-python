@@ -35,5 +35,3 @@ class GetInfoDataDB():
         rows, col_names = allGetSQLData(current_time_sql)
         return rows, col_names
 
-    def getHistoryData(self):
-        return 'history'

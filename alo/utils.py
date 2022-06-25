@@ -1,6 +1,8 @@
 import re
 import psycopg2
 import pandas as pd
+import numpy as np
+import datetime as dt
 
 single_dimensional_variable = ["charging_temp_act", "tgtplatelength2", "tgtplatethickness2", "tgtwidth", "slab_length",
                                "slab_thickness", "slab_weight_act", "slab_width",
@@ -76,6 +78,24 @@ def readConfig():
         break
     return configArr
 
+def postArgs(parser):
+    # label = ["tgtthickness", "tgtwidth", 'tgtlength', "tgtdischargetemp", "tgttmplatetemp", "cooling"]
+    # label = ["tgtthickness", "tgtwidth", 'tgtlength', "tgtdischargetemp", "tgttmplatetemp", "cooling"]
+    label = ["tgtthickness", "tgtwidth", 'tgtlength',  "cooling"]
+
+    for index in label:
+        parser.add_argument(index, type=str, required=True)
+    args = parser.parse_args(strict=True)
+    new_args = {}
+    cooling = 1
+    for arg_index in args:
+        if args[arg_index] == '':
+            continue
+        if arg_index == 'cooling':
+            cooling = int(args[arg_index])
+            continue
+        new_args[arg_index] = float(args[arg_index])
+    return new_args, cooling
 
 def allGetSQLData(SQLquery):
     conn = psycopg2.connect(database='BSData20190712', user='liucheng613', password='liucheng613',
@@ -95,16 +115,30 @@ def allGetSQLData(SQLquery):
     return rows, col_names
 
 
-def CountGoodBadNoflag(val):
+def countGoodBadNoflag(data, types):
     '''
+    types 是传入的一个df还是传入的一个dataframe的单行数据 single
     传入的状态标志位是status_fqc
     标签是：flag_lable
     '''
-    good_flag = len(val[(val['status_fqc'] == 0) & (val['flag_lable'] == '[1, 1, 1, 1, 1]')])
-    bad_flag = len(val[(val['status_fqc'] == 0) & (val['flag_lable'] != '[1, 1, 1, 1, 1]')])
-    no_flag = len(val[val['status_fqc'] == 1])
+    if types == 'dataframe':
+        good_flag = len(data[(data['status_fqc'] == 0) & (data['flag_lable'] == '[1, 1, 1, 1, 1]')])
+        bad_flag = len(data[(data['status_fqc'] == 0) & (data['flag_lable'] != '[1, 1, 1, 1, 1]')])
+        no_flag = len(data[data['status_fqc'] == 1])
+        return good_flag, bad_flag, no_flag
+    elif types == 'single':
+        lable = 0
+        if data['status_fqc'] == 1:
+            label = 404
+        elif data['status_fqc'] == 0:
+            if str(data['flag_lable']) == '[1, 1, 1, 1, 1]':
+                # 1是好板
+                lable = 1
+            else:
+                lable = 0
+        return lable
 
-    return good_flag, bad_flag, no_flag
+
 
 
 def diagnosisFlag(data, type):
@@ -119,3 +153,247 @@ def diagnosisFlag(data, type):
             else:
                 flag_list.append(404)
     return flag_list
+
+
+
+class Cluster:
+    def __init__(self,all_data, minute_diff, merge_limit, merge_conflict, args, cooling):
+        self.all_data = all_data
+        self.minute_diff = int(minute_diff)
+        self.merge_limit = int(merge_limit)
+        self.merge_conflict = int(merge_conflict)
+        self.post_table = args
+        self.cooling = cooling
+
+    # 获取cluster数据
+    def getClusterData(self):
+        result = []
+        batch_plate = self.batchPlate()
+        category_plate = self.categoryPlate(batch_plate)
+        return batch_plate, category_plate
+
+    # 批次划分
+    def batchPlate(self):
+        batch_plate = []
+        minute_diff = dt.timedelta(minutes=30)
+        pre = 0
+        for bat_index, bat_val in self.all_data.iterrows():
+            if bat_index == 0:
+                continue
+            if (bat_val['toc'] - self.all_data.iloc[bat_index - 1, :]['toc']) >= minute_diff:
+                batch_plate.append(self.all_data.iloc[pre:bat_index, :])
+                pre = bat_index
+        batch_plate.append(self.all_data.iloc[pre:, :])
+        return batch_plate
+
+    # 划分种类并判断是否可以合并
+    def categoryPlate(self, batch_plate):
+        res = []
+        for batch_index, batch_val in enumerate(batch_plate):
+            # 1是不能合并，0是可以合并
+            category_plate = []
+            might_merge_index = batch_val['platetype'].value_counts()[batch_val['platetype'].value_counts() >= self.merge_limit].index.tolist()
+            cannot_merge_index = batch_val['platetype'].value_counts()[batch_val['platetype'].value_counts() < self.merge_limit].index.tolist()
+            for index, value in enumerate(cannot_merge_index):
+                category_plate.append({'merge_flag': False, 'data': batch_val.loc[batch_val['platetype'] == value]})
+            for i, val in enumerate(might_merge_index):
+                # print(batch_index, i)
+                # 新增长度宽度厚度三个选择
+                # if i == 0:
+                #     print('debug')
+                might_merge_df = batch_val.loc[batch_val['platetype'] == val]
+                coding_list, specification_list = self.DataframeLable(might_merge_df)
+                # 编码
+                might_merge_df.insert(loc=len(might_merge_df.columns), column='coding', value=coding_list)
+                groupby_df = might_merge_df.groupby(might_merge_df['coding']).count()
+                unable_merge_list = list(groupby_df.drop(groupby_df[groupby_df.upid >= self.merge_limit].index).index)
+                might_able_merge_list = list(
+                    groupby_df.drop(groupby_df[groupby_df.upid < self.merge_limit].index).index)
+                for unable_merge_i in unable_merge_list:
+                    category_plate.append({'merge_flag': False, 'data': batch_val.loc[might_merge_df[might_merge_df['coding'] == unable_merge_i].index]})
+                # print(batch_index,i)
+                for might_able_merge_list_i in might_able_merge_list:
+                    result = self.JudgeMerge(might_merge_df[might_merge_df['coding'] == might_able_merge_list_i].index.values.tolist())
+                    for res_index, res_val in enumerate(result):
+                        # print(i, res_index)
+                        if len(res_val) >= self.merge_limit:
+                            # category_info = {}
+                            # for spe_i, spe_vla in enumerate(specification_list):
+                            #     category_info[spe_vla] = specification_list[spe_vla][int(might_merge_df.loc[res_val].iloc[0, :]['coding'][spe_i])]
+                            # if self.cooling:
+                            #     category_info['cooling'] = int(might_merge_df.loc[res_val].iloc[0, :]['coding'][-1])
+                            category_plate.append({'merge_flag': True, 'data': batch_val.loc[res_val]})
+                        else:
+                            category_plate.append({'merge_flag': False, 'data': batch_val.loc[res_val]})
+            category_plate.sort(key=lambda k: (k.get('data').iloc[0].toc))
+            for category_plate_index, category_plate_val in enumerate(category_plate):
+                category_plate_val['category_index'] = category_plate_index + 1
+            res.append(category_plate)
+        return res
+
+    def DataframeLable(self, data):
+        # 厚度0.01宽度宽度0.8，长度4
+        coding_list = [''] * len(data)
+        specification_list = {}
+        for val in self.post_table:
+            specification_list[val] = []
+            label_max = data[val].max()
+            label_min = data[val].min()
+            s_bin = []
+            point_move = label_min
+            while point_move <= label_max:
+                s_bin.append(point_move)
+                point_move += float(self.post_table[val])
+            s_bin.append(point_move)
+
+            for i in range(len(s_bin)):
+                if i < len(s_bin) - 1:
+                    specification_list[val].append([s_bin[i], s_bin[i + 1]])
+            for index, pd_val in enumerate(pd.cut(data[val], s_bin, labels=False, right=False)):
+                coding_list[index] += str(pd_val)
+
+        if self.cooling:
+            for coding_index in range(len(coding_list)):
+                coding_list[coding_index] += str(data.iloc[coding_index, :]['status_cooling'])
+
+
+        return coding_list, specification_list
+
+    # 判断是否能够合并
+    def JudgeMerge(self, data):
+        interval_list = []
+        index_location = 0
+        for index, val in enumerate(data):
+            if index == 0:
+                continue
+            else:
+                if val - data[index - 1] > self.merge_conflict:
+                    interval_list.append(data[index_location: index])
+                    index_location = index
+        interval_list.append(data[index_location:])
+        return interval_list
+
+
+
+class NewCluster:
+    def __init__(self,all_data, minute_diff, merge_limit, merge_conflict, args, cooling):
+        self.all_data = all_data
+        self.minute_diff = int(minute_diff)
+        self.merge_limit = int(merge_limit)
+        self.merge_conflict = int(merge_conflict)
+        self.post_table = args
+        self.cooling = cooling
+
+    # 获取cluster数据
+    def getClusterData(self):
+        result = []
+        batch_plate = self.batchPlate()
+        category_plate = self.categoryPlate(batch_plate)
+        return batch_plate, category_plate
+
+    # 批次划分
+    def batchPlate(self):
+        batch_plate = []
+        minute_diff = dt.timedelta(minutes=30)
+        pre = 0
+        for bat_index, bat_val in self.all_data.iterrows():
+            if bat_index == 0:
+                continue
+            if (bat_val['toc'] - self.all_data.iloc[bat_index - 1, :]['toc']) >= minute_diff:
+                batch_plate.append(self.all_data.iloc[pre:bat_index, :])
+                pre = bat_index
+        batch_plate.append(self.all_data.iloc[pre:, :])
+        return batch_plate
+
+    # 划分种类并判断是否可以合并
+    def categoryPlate(self, batch_plate):
+        res = []
+        for batch_index, batch_val in enumerate(batch_plate):
+            # 1是不能合并，0是可以合并
+            category_plate = []
+            might_merge_index = batch_val['platetype'].value_counts()[batch_val['platetype'].value_counts() >= self.merge_limit].index.tolist()
+            cannot_merge_index = batch_val['platetype'].value_counts()[batch_val['platetype'].value_counts() < self.merge_limit].index.tolist()
+            for index, value in enumerate(cannot_merge_index):
+                category_plate.append({'merge_flag': False, 'data': batch_val.loc[batch_val['platetype'] == value]})
+            for i, val in enumerate(might_merge_index):
+                # print(batch_index, i)
+                # 新增长度宽度厚度三个选择
+                # if i == 0:
+                #     print('debug')
+                might_merge_df = batch_val.loc[batch_val['platetype'] == val]
+                coding_list, specification_list = self.DataframeLable(might_merge_df)
+                # 编码
+                might_merge_df.insert(loc=len(might_merge_df.columns), column='coding', value=coding_list)
+                groupby_df = might_merge_df.groupby(might_merge_df['coding']).count()
+                unable_merge_list = list(groupby_df.drop(groupby_df[groupby_df.upid >= self.merge_limit].index).index)
+                might_able_merge_list = list(
+                    groupby_df.drop(groupby_df[groupby_df.upid < self.merge_limit].index).index)
+                for unable_merge_i in unable_merge_list:
+                    category_plate.append({'merge_flag': False, 'data': batch_val.loc[might_merge_df[might_merge_df['coding'] == unable_merge_i].index]})
+                # print(batch_index,i)
+                for might_able_merge_list_i in might_able_merge_list:
+                    result = self.JudgeMerge(might_merge_df[might_merge_df['coding'] == might_able_merge_list_i].index.values.tolist())
+                    for res_index, res_val in enumerate(result):
+                        # print(i, res_index)
+                        if len(res_val) >= self.merge_limit:
+                            resMergeList = []
+                            for i in range(len(res_val)):
+                                if not resMergeList:
+                                    resMergeList.append([res_val[i]])
+                                elif res_val[i - 1] + 1 == res_val[i]:
+                                    resMergeList[-1].append(res_val[i])
+                                else:
+                                    resMergeList.append([res_val[i]])
+                            dataCluster = []
+                            for i in resMergeList:
+                                dataCluster.append(batch_val.loc[i])
+                            category_plate.append({'merge_flag': True, 'data': batch_val.loc[res_val], 'dataCluster':dataCluster})
+                        else:
+                            category_plate.append({'merge_flag': False, 'data': batch_val.loc[res_val]})
+            category_plate.sort(key=lambda k: (k.get('data').iloc[0].toc))
+            for category_plate_index, category_plate_val in enumerate(category_plate):
+                category_plate_val['category_index'] = category_plate_index + 1
+            res.append(category_plate)
+        return res
+
+    def DataframeLable(self, data):
+        # 厚度0.01宽度宽度0.8，长度4
+        coding_list = [''] * len(data)
+        specification_list = {}
+        for val in self.post_table:
+            specification_list[val] = []
+            label_max = data[val].max()
+            label_min = data[val].min()
+            s_bin = []
+            point_move = label_min
+            while point_move <= label_max:
+                s_bin.append(point_move)
+                point_move += float(self.post_table[val])
+            s_bin.append(point_move)
+
+            for i in range(len(s_bin)):
+                if i < len(s_bin) - 1:
+                    specification_list[val].append([s_bin[i], s_bin[i + 1]])
+            for index, pd_val in enumerate(pd.cut(data[val], s_bin, labels=False, right=False)):
+                coding_list[index] += str(pd_val)
+
+        if self.cooling:
+            for coding_index in range(len(coding_list)):
+                coding_list[coding_index] += str(data.iloc[coding_index, :]['status_cooling'])
+
+
+        return coding_list, specification_list
+
+    # 判断是否能够合并
+    def JudgeMerge(self, data):
+        interval_list = []
+        index_location = 0
+        for index, val in enumerate(data):
+            if index == 0:
+                continue
+            else:
+                if val - data[index - 1] > self.merge_conflict:
+                    interval_list.append(data[index_location: index])
+                    index_location = index
+        interval_list.append(data[index_location:])
+        return interval_list
